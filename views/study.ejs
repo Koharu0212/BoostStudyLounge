@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/stylesheet.css">
+    <title>記録</title>
+</head>
+<body>
+    <div class="stopwatch">
+        <form action="/study" method="post">
+            勉強内容
+            <input type="text" id="name" name="content" required  maxlength="10" size="10" />
+            <div id="display" name="measurement-time">00:00:00</div>
+            <button type="button" id="startStop">開始</button>
+            <input class="summary-submit" type="submit" value="計測終了">
+            <script src="/js/timer.js" type="application/javascript"></script>
+        </form>
+    </div>
+    
+</body>
+</html>
