@@ -8,15 +8,38 @@
 </head>
 <body>
     <div class="stopwatch">
-        <form action="/study" method="post">
-            勉強内容
-            <input type="text" id="name" name="content" required  maxlength="10" size="10" />
-            <div id="display" name="measurement-time">00:00:00</div>
-            <button type="button" id="startStop">開始</button>
-            <input class="summary-submit" type="submit" value="計測終了">
-            <script src="/js/timer.js" type="application/javascript"></script>
-        </form>
+        勉強内容
+        <input type="text" id="content" name="content" required  maxlength="10" size="10" />
+        <div id="display" name="measurement-time">00:00:00</div>
+        <button type="button" id="startStop">開始</button>
+        <button type="button" id="save">計測終了</button>
+        <script src="/js/timer.js" type="application/javascript"></script>
     </div>
-    
+    <div class="record">
+        <% if(records && records.length > 0) { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>勉強日</th>
+                        <th>学習時間</th>
+                        <th>学習内容</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% records.forEach(record => { %>
+                        <tr>
+                            <td><%= record.id %></td>
+                            <td><%= formatDate(record.study_date)%></td>
+                            <td><%= record.measurement_time %></td>
+                            <td><%= record.content %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>まだ記録がありません。</p>
+        <% } %>
+    </div>
 </body>
 </html>
