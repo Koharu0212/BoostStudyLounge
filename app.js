@@ -17,13 +17,49 @@ app.use(express.json());
 //POSTパラメータの受け取りに必要
 app.use(express.urlencoded({extended: false}));
 
+//セッションの利用設定
+app.use(
+  session({
+    secret: 'my_secret_key',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use((req, res, next) => {
+  if (req.session.userId === undefined) {
+    res.locals.username = 'ゲスト';
+    res.locals.isLoggedIn = false;
+  } else {
+    res.locals.username = req.session.username;
+    res.locals.isLoggedIn = true;
+  }
+  next();
+});
+
 // サーバを起動
 const port = 3000;
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
 
-const connection = mysql.createConnection({
+const connection_users  = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'password',	
+  port: 3306,
+  database: 'users'
+});
+
+connection_users.connect((err) => {
+  if (err) {
+    console.log('error connecting: ' + err.stack);
+    return;
+  }
+  console.log('success: users');
+});
+
+const connection_record = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: 'password',	
@@ -32,12 +68,12 @@ const connection = mysql.createConnection({
 });
 
 //MySQLへの接続が失敗した際に、エラーを出力
-connection.connect((err) => {
+connection_record.connect((err) => {
   if (err) {
     console.log('error connecting: ' + err.stack);
     return;
   }
-  console.log('success');
+  console.log('success: study_record');
 });
 
 // ルートパスへのリクエストを処理
@@ -45,10 +81,116 @@ app.get('/', (req, res) => {
   res.render('top.ejs', { message: 'Boost Study  Lounge' });
 });
 
+app.get('/signup', (req, res) => {
+  res.render('signup.ejs', { errors: [] });
+});
+
+app.post('/signup', 
+  (req, res, next) => {
+    //console.log('入力値の空チェック');
+    const username = req.body.username;
+    const email = req.body.email;
+    const password = req.body.password;
+    const errors = [];
+
+    if (username === '') {
+      errors.push('ユーザー名が空です');
+    }
+
+    if (email === '') {
+      errors.push('メールアドレスが空です');
+    }
+
+    if (password === '') {
+      errors.push('パスワードが空です');
+    }
+
+    if (errors.length > 0) {
+      res.render('signup.ejs', { errors: errors });
+    } else {
+      next();
+    }
+  },
+  (req, res, next) => {
+    console.log('メールアドレスの重複チェック');
+    const email = req.body.email;
+    const errors = [];
+    connection_users.query(
+      'SELECT * FROM users WHERE email = ?',
+      [email],
+      (error, results) => {
+        if (results.length > 0) {
+          errors.push('ユーザー登録に失敗しました');
+          res.render('signup.ejs', { errors: errors });
+        } else {
+          next();
+        }
+      }
+    );
+  },
+  (req, res) => {
+    console.log('ユーザー登録');
+    const username = req.body.username;
+    const email = req.body.email;
+    const password = req.body.password;
+    bcrypt.hash(password, 10, (error, hash) => {
+      connection_users.query(
+        'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
+        [username, email, hash],
+        (error, results) => {
+          req.session.userId = results.insertId;
+          req.session.username = username;
+          res.redirect('/study');
+        }
+      );
+    });
+  }
+);
+
+app.get('/login', (req, res) => {
+  res.render('login.ejs');
+});
+
+app.post('/login', (req, res) => {
+  const email = req.body.email;
+  connection_users.query(
+    'SELECT * FROM users WHERE email = ?',
+    [email],
+    (error, results) => {
+      if (results.length > 0) {
+        const plain = req.body.password;        
+        const hash = results[0].password;
+    
+        // パスワードを比較
+        bcrypt.compare(plain, hash, (error, isEqual) => {
+          if(isEqual) {
+            req.session.userId = results[0].user_id;
+            req.session.username = results[0].username;
+            res.redirect('/study');
+          } else {
+            res.redirect('/login');
+          }
+        });
+        
+      } else {
+        res.redirect('/login');
+      }
+    }
+  );
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy((error) => {
+    res.redirect('/');
+  });
+});
+
 //計測ページ・DBの勉強記録を表示
 app.get('/study', (req, res) => {
-  connection.query(
-    'SELECT * FROM study_record',
+  const user_id = req.session.userId;
+  connection_record.query(
+    'SELECT * FROM study_record where user_id = ?',
+    [user_id],
     (error, results) => {
       if (error) throw error;
       res.render('study.ejs', { 
@@ -61,21 +203,24 @@ app.get('/study', (req, res) => {
 
 //計測終了時にDBに挿入
 app.post('/save', (req, res) => {
-  console.log(req.body);
   const { study_date, content, measurement_time } = req.body;
+  const user_id = req.session.userId;
 
-  connection.query(
-    'INSERT INTO study_record (study_date, measurement_time, content) VALUES (?, ?, ?)',
-    [study_date, measurement_time, content],
-    (error, results) => {
-      if (error) {
-        console.error('Error saving data:', error);
-        res.status(500).json({ error: 'Failed to save data' });
-      } else {
-        res.json({ success: true });
+  //ログインしているときだけDBに追加
+  if(user_id){
+    connection_record.query(
+      'INSERT INTO study_record (user_id, study_date, measurement_time, content) VALUES (?, ?, ?, ?)',
+      [user_id, study_date, measurement_time, content],
+      (error, results) => {
+        if (error) {
+          console.error('Error saving data:', error);
+          res.status(500).json({ error: 'Failed to save data' });
+        } else {
+          res.json({ success: true });
+        }
       }
-    }
-  );
+    );
+  }
 });
 
 // 日付フォーマット関数

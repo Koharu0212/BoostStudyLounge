@@ -7,6 +7,13 @@
     <title>記録</title>
 </head>
 <body>
+    <p>ようこそ、<%= locals.username %>さん</p>
+    <% if(locals.username === 'ゲスト') {  %>
+        <a href="/">トップに戻る</a>
+    <% } else { %>
+        <a href="/logout">ログアウト</a>
+    <% } %>
+    
     <div class="stopwatch">
         勉強内容
         <input type="text" id="content" name="content" required  maxlength="10" size="10" />
@@ -20,7 +27,6 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>勉強日</th>
                         <th>学習時間</th>
                         <th>学習内容</th>
@@ -29,7 +35,6 @@
                 <tbody>
                     <% records.forEach(record => { %>
                         <tr>
-                            <td><%= record.id %></td>
                             <td><%= formatDate(record.study_date)%></td>
                             <td><%= record.measurement_time %></td>
                             <td><%= record.content %></td>
