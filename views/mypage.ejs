@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/stylesheet.css">
+    <title>マイページ</title>
+</head>
+<body>
+	<p>ようこそ、<%= locals.username %>さん</p>
+    <% if(locals.username === 'ゲスト') {  %>
+        <a href="/">トップに戻る</a>
+    <% } else { %>
+        <a href="/logout">ログアウト</a>
+    <% } %>
+	<div class="record">
+		<% if(records && records.length > 0) { %>
+			<table>
+				<thead>
+					<tr>
+						<th>勉強日</th>
+						<th>学習時間</th>
+						<th>学習内容</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% records.forEach(record => { %>
+						<tr>
+							<td><%= formatDate(record.study_date)%></td>
+							<td><%= record.measurement_time %></td>
+							<td><%= record.content %></td>
+						</tr>
+					<% }); %>
+				</tbody>
+			</table>
+		<% } else { %>
+			<p>まだ記録がありません。</p>
+		<% } %>
+	</div>
+</body>
+</html>

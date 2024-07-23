@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seat Reservation App</title>
+    <link rel="stylesheet" href="/css/stylesheet.css">
+</head>
+<body>
+	<p>ようこそ、<%= locals.username %>さん</p>
+    <% if(locals.username === 'ゲスト') {  %>
+        <a href="/">トップに戻る</a>
+    <% } else { %>
+        <a href="/logout">ログアウト</a>
+    <% } %>
+	<a href="/mypage">マイページ</a>
+    <h1>Seat Reservation</h1>
+    <div id="seat-container"></div>
+    <div id="study-container" style="display: none;">
+        <h2>Study Session</h2>
+        <label for="study-content">Study Content:</label>
+        <input type="text" id="study-content" />
+        <div id="stopwatch">
+            <span id="time">00:00:00</span>
+            <button id="start">Start</button>
+            <button id="stop" disabled>Stop</button>
+        </div>
+    </div>
+    <script src="/js/room_script.js"></script>
+</body>
+</html>

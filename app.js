@@ -67,13 +67,28 @@ const connection_record = mysql.createConnection({
   database: 'study_record'
 });
 
-//MySQLへの接続が失敗した際に、エラーを出力
 connection_record.connect((err) => {
   if (err) {
     console.log('error connecting: ' + err.stack);
     return;
   }
   console.log('success: study_record');
+});
+
+const seats = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'password',	
+  port: 3306,
+  database: 'seats'
+});
+
+seats.connect((err) => {
+  if (err) {
+    console.log('error connecting: ' + err.stack);
+    return;
+  }
+  console.log('success: seats');
 });
 
 // ルートパスへのリクエストを処理
@@ -140,7 +155,7 @@ app.post('/signup',
         (error, results) => {
           req.session.userId = results.insertId;
           req.session.username = username;
-          res.redirect('/study');
+          res.redirect('/room');
         }
       );
     });
@@ -166,7 +181,7 @@ app.post('/login', (req, res) => {
           if(isEqual) {
             req.session.userId = results[0].user_id;
             req.session.username = results[0].username;
-            res.redirect('/study');
+            res.redirect('/room');
           } else {
             res.redirect('/login');
           }
@@ -205,22 +220,18 @@ app.get('/study', (req, res) => {
 app.post('/save', (req, res) => {
   const { study_date, content, measurement_time } = req.body;
   const user_id = req.session.userId;
-
-  //ログインしているときだけDBに追加
-  if(user_id){
-    connection_record.query(
-      'INSERT INTO study_record (user_id, study_date, measurement_time, content) VALUES (?, ?, ?, ?)',
-      [user_id, study_date, measurement_time, content],
-      (error, results) => {
-        if (error) {
-          console.error('Error saving data:', error);
-          res.status(500).json({ error: 'Failed to save data' });
-        } else {
-          res.json({ success: true });
-        }
+  connection_record.query(
+    'INSERT INTO study_record (user_id, study_date, measurement_time, content) VALUES (?, ?, ?, ?)',
+    [user_id, study_date, measurement_time, content],
+    (error, results) => {
+      if (error) {
+        console.error('Error saving data:', error);
+        res.status(500).json({ error: 'Failed to save data' });
+      } else {
+        res.json({ success: true });
       }
-    );
-  }
+    }
+  );
 });
 
 // 日付フォーマット関数
@@ -231,3 +242,55 @@ function formatDate(dateString) {
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}年${month}月${day}日`;
 }
+
+app.get('/mypage', (req, res) => {
+  const user_id = req.session.userId;
+  connection_record.query(
+    'SELECT * FROM study_record where user_id = ?',
+    [user_id],
+    (error, results) => {
+      if (error) throw error;
+      res.render('mypage.ejs', { 
+        records: results,
+        formatDate: formatDate
+      });
+    }
+  );
+});
+
+app.get('/room', (req, res) => {
+  res.render('room.ejs');
+});
+
+// 座席状況の取得
+app.get('/api/seats', (req, res) => {
+  seats.query('SELECT * FROM seats', (error, results) => {
+    if (error) throw error;
+    res.json(results.map(row => row.reserved));
+  });
+});
+
+// 座席の予約
+app.post('/api/reserve', (req, res) => {
+  const { seatIndex } = req.body;
+  seats.query('SELECT user_id FROM seats WHERE id = ?', [seatIndex], (error, results) => {
+    if (error) throw error;
+    if (results[0].user_id === 0) {
+      seats.query('UPDATE seats SET user_id = 1 WHERE id = ?', [seatIndex], (error) => {
+        if (error) throw error;
+        res.json({ success: true });
+      });
+    } else {
+      res.json({ success: false, message: 'Seat already reserved' });
+    }
+  });
+});
+
+// 座席の解放
+app.post('/api/release', (req, res) => {
+  const { seatIndex } = req.body;
+  seats.query('UPDATE seats SET user_id = 0 WHERE id = ?', [seatIndex], (error) => {
+    if (error) throw error;
+    res.json({ success: true });
+  });
+});
