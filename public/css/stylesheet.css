@@ -1,9 +1,90 @@
 body {
-    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    text-rendering: optimizeSpeed;
+    color: #2B546A;
+    line-height: 1.6;
     display: flex;
     flex-direction: column;
+    font-family: Lato, "Hiragino Maru Gothic Pro", "Meiryo UI", Meiryo, "MS PGothic", sans-serif;
+  }
+
+  /* ヘッダー全体のスタイル */
+header {
+    background-color: #88b8e7;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+  
+  /* ヘッダーコンテンツのコンテナ */
+  .header-container {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-}
+    margin: 0 0;
+    padding: 10px 20px;
+  }
+  
+  /* ロゴのスタイル */
+  .logo {
+    margin-left: 20px;
+    flex: 0 0 auto;
+  }
+  
+  .logo img {
+    height: 40px; /* ロゴの高さを調整 */
+  }
+  
+  /* ユーザー情報とアクションのコンテナ */
+  .user-info {
+    display: flex;
+    align-items: center;
+    
+  }
+  
+  /* ユーザー名のスタイル */
+  .user-name {
+    font-size: 14px;
+    margin-right: 20px;
+  }
+  
+  /* ユーザーアクション（マイページ、ログアウト）のコンテナ */
+  .user-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: 20px;
+  }
+  
+  /* マイページとログアウトのリンクスタイル */
+  .user-actions a {
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  .user-actions a:hover {
+    text-decoration: underline;
+  }
+  
+  /* マイページリンクのスタイル */
+  .user-actions .mypage {
+    font-weight: bold;
+  }
+  
+  /* ログアウトリンクのスタイル */
+  .user-actions .logout {
+    color: #666;
+  }
+  
+  /* ヘッダーの下のコンテンツの上部余白を調整 */
+  body {
+    padding-top: 60px; /* ヘッダーの高さに応じて調整 */
+  }
+  
 
 #seat-container {
     display: grid;

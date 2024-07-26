@@ -8,13 +8,7 @@
 	<script src="/js/send_url.js"></script>
 </head>
 <body>
-	<p>ようこそ、<%= locals.username %>さん</p>
-    <% if(locals.username === 'ゲスト') {  %>
-        <a href="/">トップに戻る</a>
-    <% } else { %>
-        <a href="/logout">ログアウト</a>
-    <% } %>
-	<a href="/mypage">マイページ</a>
+    <%- include('header'); %>
     <h1>Seat Reservation</h1>
     <div id="seat-container">
         <% seats.forEach((seat) => { %>

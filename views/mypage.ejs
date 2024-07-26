@@ -8,12 +8,7 @@
     <title>マイページ</title>
 </head>
 <body>
-	<p>ようこそ、<%= locals.username %>さん</p>
-    <% if(locals.username === 'ゲスト') {  %>
-        <a href="/">トップに戻る</a>
-    <% } else { %>
-        <a href="/logout">ログアウト</a>
-    <% } %>
+	<%- include('header'); %>
 	<div class="record">
 		<% if(records && records.length > 0) { %>
 			<table>
