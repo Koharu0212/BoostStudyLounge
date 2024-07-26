@@ -75,7 +75,7 @@ connection_record.connect((err) => {
   console.log('success: study_record');
 });
 
-const seats = mysql.createConnection({
+const connection_seats = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: 'password',	
@@ -83,7 +83,7 @@ const seats = mysql.createConnection({
   database: 'seats'
 });
 
-seats.connect((err) => {
+connection_seats.connect((err) => {
   if (err) {
     console.log('error connecting: ' + err.stack);
     return;
@@ -200,24 +200,8 @@ app.get('/logout', (req, res) => {
   });
 });
 
-//計測ページ・DBの勉強記録を表示
-app.get('/study', (req, res) => {
-  const user_id = req.session.userId;
-  connection_record.query(
-    'SELECT * FROM study_record where user_id = ?',
-    [user_id],
-    (error, results) => {
-      if (error) throw error;
-      res.render('study.ejs', { 
-        records: results,
-        formatDate: formatDate
-      });
-    }
-  );
-});
-
 //計測終了時にDBに挿入
-app.post('/save', (req, res) => {
+app.post('/api/save', (req, res) => {
   const { study_date, content, measurement_time } = req.body;
   const user_id = req.session.userId;
   connection_record.query(
@@ -249,7 +233,9 @@ app.get('/mypage', (req, res) => {
     'SELECT * FROM study_record where user_id = ?',
     [user_id],
     (error, results) => {
-      if (error) throw error;
+      if (error) {
+        console.log(error);
+      }
       res.render('mypage.ejs', { 
         records: results,
         formatDate: formatDate
@@ -259,12 +245,20 @@ app.get('/mypage', (req, res) => {
 });
 
 app.get('/room', (req, res) => {
-  res.render('room.ejs');
+  connection_seats.query(
+    'SELECT * FROM seats',
+    (error, results) => {
+      if(error) {
+        console.log(error);
+      }
+      res.render('room.ejs', {seats : results});
+    }
+  )
 });
 
 // 座席状況の取得
 app.get('/api/seats', (req, res) => {
-  seats.query('SELECT * FROM seats', (error, results) => {
+  connection_seats.query('SELECT * FROM seats', (error, results) => {
     if (error) throw error;
     res.json(results.map(row => row.reserved));
   });
@@ -273,10 +267,10 @@ app.get('/api/seats', (req, res) => {
 // 座席の予約
 app.post('/api/reserve', (req, res) => {
   const { seatIndex } = req.body;
-  seats.query('SELECT user_id FROM seats WHERE id = ?', [seatIndex], (error, results) => {
+  connection_seats.query('SELECT user_id FROM seats WHERE id = ?', [seatIndex], (error, results) => {
     if (error) throw error;
     if (results[0].user_id === 0) {
-      seats.query('UPDATE seats SET user_id = 1 WHERE id = ?', [seatIndex], (error) => {
+      connection_seats.query('UPDATE seats SET user_id = 1 WHERE id = ?', [seatIndex], (error) => {
         if (error) throw error;
         res.json({ success: true });
       });
@@ -289,7 +283,7 @@ app.post('/api/reserve', (req, res) => {
 // 座席の解放
 app.post('/api/release', (req, res) => {
   const { seatIndex } = req.body;
-  seats.query('UPDATE seats SET user_id = 0 WHERE id = ?', [seatIndex], (error) => {
+  connection_seats.query('UPDATE seats SET user_id = 0 WHERE id = ?', [seatIndex], (error) => {
     if (error) throw error;
     res.json({ success: true });
   });

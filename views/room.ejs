@@ -16,7 +16,15 @@
     <% } %>
 	<a href="/mypage">マイページ</a>
     <h1>Seat Reservation</h1>
-    <div id="seat-container"></div>
+    <div id="seat-container">
+        <% seats.forEach((seat) => { %>
+            <% if(seat.user_id === 0){ %>
+                <div class="seat available" data-seat-number="<%=seat.seat_number%>"><%=seat.seat_number%></div>
+            <% } else { %>
+                <div class="seat reserved" data-seat-number="<%=seat.seat_number%>"><%=seat.seat_number%></div>
+            <% } %>
+        <% }) %>
+    </div>
     <div id="study-container" style="display: none;">
         <h2>Study Session</h2>
         <label for="study-content">Study Content:</label>

@@ -1,8 +1,8 @@
-// public/js/room_script.js
 document.addEventListener('DOMContentLoaded', () => {
     const seatContainer = document.getElementById('seat-container');
     const studyContainer = document.getElementById('study-container');
     const studyContentInput = document.getElementById('study-content');
+	const seats = seatContainer.querySelectorAll('.seat');
     const timeDisplay = document.getElementById('time');
     const startButton = document.getElementById('start');
     const stopButton = document.getElementById('stop');
@@ -11,41 +11,43 @@ document.addEventListener('DOMContentLoaded', () => {
     let startTime;
     let reservedSeatIndex;
 
-    // 座席の初期化
-    function initializeSeats() {
-        fetch('/api/seats')
-            .then(response => response.json())
-            .then(seats => {
-                seatContainer.innerHTML = '';
-                seats.forEach((reserved, index) => {
-                    const seat = document.createElement('div');
-                    seat.className = `seat ${reserved ? 'reserved' : 'available'}`;
-                    seat.textContent = index + 1;
-                    seat.addEventListener('click', () => reserveSeat(index));
-                    seatContainer.appendChild(seat);
-                });
-            });
-    }
+    //座席の初期化
+	function initializeSeats() {
+		seats.forEach(seat => {
+			if (seat.classList.contains('available')) {
+				seat.addEventListener('click', () => reserveSeat(seat));
+			} else if (seat.classList.contains('reserved')) {
+				seat.addEventListener('click', () => alert('この座席は既に使用されています'));
+			}
+		});
+		
+	}
 
     // 座席の予約
-    function reserveSeat(index) {
-        fetch('/api/reserve', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ seatIndex: index+1 }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                reservedSeatIndex = index;
-                seatContainer.style.display = 'none';
-                studyContainer.style.display = 'block';
-            } else {
-                alert(data.message);
-            }
-        });
+    function reserveSeat(seat) {
+        const seatNumber = seat.getAttribute('data-seat-number');
+		fetch('/api/reserve', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ seatIndex: parseInt(seatNumber) }),
+		})
+		.then(response => response.json())
+		.then(data => {
+			if (data.success) {
+				reservedSeatIndex = parseInt(seatNumber) - 1; // インデックスは0から始まるため
+				seatContainer.style.display = 'none';
+				studyContainer.style.display = 'block';
+				seat.className = 'seat reserved';
+			} else {
+				alert(data.message);
+			}
+		})
+		.catch(error => {
+			console.error('Error:', error);
+			alert('予約処理中にエラーが発生しました。');
+		});
     }
 
     // ストップウォッチの開始
@@ -61,8 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(timerInterval);
         const elapsedTime = Date.now() - startTime;
         const studyContent = studyContentInput.value;
-        
-        fetch('/save', {
+		if(studyContent === null || studyContent===''){
+			alert('勉強内容を入力してから終了してください');
+			return;
+		}
+        fetch('/api/save', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -76,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+				alert('データが保存されました');
                 releaseSeat(reservedSeatIndex);
             } else {
                 alert('Failed to save study session');
@@ -98,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 initializeSeats();
                 seatContainer.style.display = 'block';
                 studyContainer.style.display = 'none';
+				window.location.reload(true);
                 startButton.disabled = false;
                 stopButton.disabled = true;
                 studyContentInput.value = '';
