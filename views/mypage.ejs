@@ -10,6 +10,12 @@
 <body>
 	<%- include('header'); %>
 	<div class="record">
+		<h1>勉強履歴</h1>
+		<h3>表示期間</h3>
+		<% if(records && records.length > 0) { %>
+			<h3><%=records.length%>件の履歴があります。</h3>
+		<% } %>
+		
 		<% if(records && records.length > 0) { %>
 			<table>
 				<thead>

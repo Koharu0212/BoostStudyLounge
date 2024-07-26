@@ -8,7 +8,6 @@ body {
     font-family: Lato, "Hiragino Maru Gothic Pro", "Meiryo UI", Meiryo, "MS PGothic", sans-serif;
   }
 
-  /* ヘッダー全体のスタイル */
 header {
     background-color: #88b8e7;
     position: fixed;
@@ -17,8 +16,12 @@ header {
     width: 100%;
     z-index: 1000;
   }
+
+  h1, h2, h3{
+    margin-left: 40px;
+    margin-right: 20px;
+  }
   
-  /* ヘッダーコンテンツのコンテナ */
   .header-container {
     display: flex;
     justify-content: space-between;
@@ -27,24 +30,21 @@ header {
     padding: 10px 20px;
   }
   
-  /* ロゴのスタイル */
   .logo {
     margin-left: 20px;
     flex: 0 0 auto;
   }
   
   .logo img {
-    height: 40px; /* ロゴの高さを調整 */
+    height: 40px; 
   }
   
-  /* ユーザー情報とアクションのコンテナ */
   .user-info {
     display: flex;
     align-items: center;
     
   }
   
-  /* ユーザー名のスタイル */
   .user-name {
     font-size: 14px;
     margin-right: 20px;
@@ -108,6 +108,40 @@ header {
 }
 
 .seat.reserved {
-    background-color: red;
+    background-color: rgb(162, 161, 161);
     color: white;
+}
+
+table {
+    width: calc(100% - 80px);
+    text-align: center;
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: fixed;
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+tr:nth-child(2n+1) {
+    background: #cfdff0;
+}
+
+th {
+    padding: 10px;
+    background: #778ca3;
+    border-right: solid 1px #778ca3;
+    color: #ffffff;
+}
+
+th:last-child {
+    border-right: none;
+}
+
+td {
+    padding: 10px;
+    border-right: solid 1px #778ca3; 
+}
+
+td:last-child {
+    border-right: none;
 }

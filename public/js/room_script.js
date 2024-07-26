@@ -101,10 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                window.location.reload(true);
                 initializeSeats();
                 seatContainer.style.display = 'block';
                 studyContainer.style.display = 'none';
-				window.location.reload(true);
                 startButton.disabled = false;
                 stopButton.disabled = true;
                 studyContentInput.value = '';

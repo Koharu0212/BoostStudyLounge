@@ -9,7 +9,8 @@
 </head>
 <body>
     <%- include('header'); %>
-    <h1>Seat Reservation</h1>
+    <h1>座席表</h1>
+    <h3>座席を選択してください。</h3>
     <div id="seat-container">
         <% seats.forEach((seat) => { %>
             <% if(seat.user_id === 0){ %>
