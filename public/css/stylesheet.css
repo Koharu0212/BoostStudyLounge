@@ -99,7 +99,7 @@ header {
   }
   
 
-#seat-container {
+#seat-container {  /* id="seat-container"の場合適用される */
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 10px;
@@ -126,16 +126,16 @@ header {
 }
 
 .sign {
-    border-top: 20px solid #88E7CE;
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
   }
   
-  .sign > .container {
+  .sign > .container { /* 直下セレクタ */
     width: 550px;
     padding: 60px 0;
+    align-items: center;
   }
   
   .sign > .container > p {
@@ -148,11 +148,11 @@ header {
   .sign > .container > p > a {
     display: inline-block;
     margin-left: 20px;
-    color: #4CCFC9;
+    color: #88b8e7;
   }
   
   .sign > .container > p > a:hover {
-    color: #2DC2BC;
+    color: #3f71a3;
   }
   
   .sign > .container form {
@@ -191,21 +191,37 @@ header {
     padding: 10px 20px;
   }
   
-  .sign input:-webkit-autofill {
-    box-shadow: 0 0 0px 1000px #fff inset;
-  }
-  
   .sign input[name="username"] {
     margin-bottom: 30px;
+    font-size: 14px;
+    width: 346px;
   }
   
   .sign input[name="email"] {
     margin-bottom: 30px;
+    font-size: 14px;
+    width: 346px;
+  }
+
+  .sign input[name="password"] {
+    margin-bottom: 30px;
+    font-size: 14px;
+    width: 346px;
   }
   
   .sign input[type="submit"] {
     margin-top: 50px;
-    width: 90%;
+    font-size: 14px;
+    width: 100%;
+    border-radius : 5%;
+    color: #ffffff;
+    background: #88b8e7;
+  }
+
+  .sign input[type="submit"]:hover {
+    box-shadow    : none;      
+    color         : #000066;   
+    background    : #bbdaf8;  
   }
 
 table {
