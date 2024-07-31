@@ -17,7 +17,9 @@ body {
 }
 
 body.no-padding-top {
-    padding-top: 0; /* トップページ用のパディングを無効にする */
+    /* トップページ用のパディングを無効にする */
+    margin: 0;
+    padding: 0;
 }
 
 .top-wrapper {
