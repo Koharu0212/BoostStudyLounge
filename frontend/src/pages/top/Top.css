@@ -1,0 +1,92 @@
+.top {
+	width:  100vw;
+	height:  100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.topWapper {
+	position: relative;
+}
+
+.topImg {
+	width: 100%;
+    opacity: 0.7;
+}
+
+.topContainer {
+	position: absolute;
+	width: 40%;
+	height: 25%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	top: 0;
+  	right: 0;
+  	bottom: 0;
+  	left: 0;
+	margin: auto;
+}
+
+.topText {
+	align-items: center;
+}
+
+.topLogo {
+	font-size: 50px;
+	font-weight: 500;
+	text-align: center;
+	letter-spacing: 2px;
+	text-shadow: 0 0 5px white;
+}
+
+.topMsg {
+	font-size: 24px;
+	text-align: center;
+	text-shadow: 0 0 5px white;
+}
+
+.topButton {
+	display: flex;
+	justify-content: space-between;
+}
+
+.loginButton {
+	height: 50px;
+	width: 150px;
+	border-radius: 10px;
+	border: none;
+	background-color: #41428b;
+	color: white;
+	font-size: 20px;
+	font-weight: 500;
+	cursor: pointer;
+	margin: 0 20px;
+	opacity: 0.7;
+}
+
+.loginButton:hover {
+	opacity: 1;
+	transition: 0.3s;
+}
+
+.registerButton {
+	height: 50px;
+	width: 150px;
+	border-radius: 10px;
+	border: none;
+	background-color: #428b41;
+	color: white;
+	font-size: 20px;
+	font-weight: 500;
+	cursor: pointer;
+	margin: 0 20px;
+	opacity: 0.7;
+}
+
+.registerButton:hover {
+	opacity: 1;
+	transition: 0.3s;
+}

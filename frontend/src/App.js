@@ -1,8 +1,8 @@
-import './App.css';
+import Top from "./pages/top/Top"
 
 function App() {
   return (
-    <></>
+    <Top />
   );
 }
 
