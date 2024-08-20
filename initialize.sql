@@ -1,5 +1,4 @@
-CREATE DATABASE users;
-USE users;
+CREATE DATABASE boost_study_lounge;
 CREATE TABLE users (
   user_id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
   username varchar(20) DEFAULT NULL,
@@ -7,8 +6,6 @@ CREATE TABLE users (
   password varchar(60) DEFAULT NULL
 );
 
-CREATE DATABASE study_record;
-USE study_record;
 CREATE TABLE study_record (
   id INT PRIMARY KEY AUTO_INCREMENT,
 	user_id INT NOT NULL,
@@ -17,11 +14,9 @@ CREATE TABLE study_record (
 	content text NOT NULL
 );
 
-CREATE DATABASE seats;
-USE seats;
 CREATE TABLE seats (
   id INT PRIMARY KEY AUTO_INCREMENT,
   seat_number INT UNIQUE,
   user_id INT
 );
-INSERT INTO seats (seat_number) VALUES (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20),(21),(22),(23),(24),(25);
+INSERT INTO seats (seat_number, user_id) VALUES (1, 0),(2, 0),(3, 0),(4, 0),(5, 0),(6, 0),(7, 0),(8, 0),(9, 0),(10, 0),(11, 0),(12, 0),(13, 0),(14, 0),(15, 0),(16, 0),(17, 0),(18, 0),(19, 0),(20, 0),(21, 0),(22, 0),(23, 0),(24, 0),(25, 0);
