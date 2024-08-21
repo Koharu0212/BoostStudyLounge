@@ -29,11 +29,11 @@ export const Seats =
 
 export const Users =
 [
-	{user_id: 1, username: "kokahana", email:"koharu@rrr.com", password: "koharu0212"},
-	{user_id: 2, username: "inu", email:"inu@zzz.com", password: "inuinu"},
-	{user_id: 3, username: "neko", email:"neko@email.com", password: "nekoneko"},
-	{user_id: 4, username: "sheep", email:"sheep@email.com", password: "hitsuji"},
-	{user_id: 5, username: "usagi", email:"usagi@xxx.com", password: "usausa"},
+	{id: 1, username: "kokahana", email:"koharu@rrr.com", password: "koharu0212"},
+	{id: 2, username: "inu", email:"inu@zzz.com", password: "inuinu"},
+	{id: 3, username: "neko", email:"neko@email.com", password: "nekoneko"},
+	{id: 4, username: "sheep", email:"sheep@email.com", password: "hitsuji"},
+	{id: 5, username: "usagi", email:"usagi@xxx.com", password: "usausa"},
 ];
 
 export const StudyRecord =
