@@ -1,0 +1,37 @@
+.seatLegendContainer {
+	margin-top: 70px; 
+}
+
+.seatLegend {
+	margin: 20px 0;
+	display: flex;
+	align-items: center;
+}
+
+.availabeSeatLegend {
+	width: 30px;
+	height: 30px;
+	margin-right: 20px;
+	border-radius: 5px;
+	background-color: rgb(79, 89, 201);
+}
+
+.occupiedSeatLegend {
+	width: 30px;
+	height: 30px;
+	margin-right: 20px;
+	border-radius: 5px;
+	background-color: rgb(47, 154, 56);
+}
+
+.mySeatLegend {
+	width: 30px;
+	height: 30px;
+	margin-right: 20px;
+	border-radius: 5px;
+	background-color: rgb(245, 80, 80);
+}
+
+.seatLegendMsg {
+	font-size: 16px;
+}
