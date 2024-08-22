@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const seatContainer = document.getElementById('seat-container');
+    const seatGrid = document.getElementById('seats-grid');
     const studyContainer = document.getElementById('study-container');
     const studyContentInput = document.getElementById('study-content');
-	const seats = seatContainer.querySelectorAll('.seat');
+	const seats = seatGrid.querySelectorAll('.seat');
     const timeDisplay = document.getElementById('time');
     const startButton = document.getElementById('start');
     const stopButton = document.getElementById('stop');
@@ -16,11 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
 		seats.forEach(seat => {
 			if (seat.classList.contains('available')) {
 				seat.addEventListener('click', () => reserveSeat(seat));
-			} else if (seat.classList.contains('reserved')) {
+			} else if (seat.classList.contains('unavailable')) {
 				seat.addEventListener('click', () => alert('この座席は既に使用されています'));
 			}
 		});
-		
 	}
 
     // 座席の予約
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		})
 		.catch(error => {
 			console.error('Error:', error);
-			alert('予約処理中にエラーが発生しました。');
+			alert('予約処理中にエラーが発生しました。' + error);
 		});
     }
 
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                study_date: new Date().toISOString().split('T')[0],
+                study_date: new Date().toLocaleDateString(),
                 content: studyContent,
                 measurement_time: Math.floor(elapsedTime / 1000),
             }),
@@ -101,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                window.location.reload(true);
                 initializeSeats();
                 seatContainer.style.display = 'block';
                 studyContainer.style.display = 'none';

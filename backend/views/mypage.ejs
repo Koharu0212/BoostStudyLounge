@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/stylesheet.css">
+    <script src="/js/send_url.js"></script>
+    <title>マイページ</title>
+</head>
+<body>
+    <%- include('header'); %>
+    <div class="record">
+        <h1>勉強履歴</h1>
+        <h3>表示期間</h3>
+        <form id="period-form">
+            <label><input type="radio" name="period" value="week"> 1週間</label>
+            <label><input type="radio" name="period" value="month"> 1ヶ月</label>
+            <label><input type="radio" name="period" value="year"> 1年</label>
+            <label><input type="radio" name="period" value="all" checked> すべて</label>
+            <button type="submit">この条件で表示する</button>
+        </form>
+        
+        <div id="records-container">
+            <% if(records && records.length > 0) { %>
+                <h3><span id="record-count"><%=records.length%></span>件の履歴があります。</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>勉強日</th>
+                            <th>学習時間</th>
+                            <th>学習内容</th>
+                        </tr>
+                    </thead>
+                    <tbody id="records-body">
+                        <% records.forEach(record => { %>
+                            <tr>
+                                <td><%= formatDate(record.study_date)%></td>
+                                <td><%= record.measurement_time %></td>
+                                <td><%= record.content %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>まだ記録がありません。</p>
+            <% } %>
+        </div>
+    </div>
+    <script src="/js/mypage.js"></script>
+</body>
+</html>

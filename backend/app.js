@@ -135,7 +135,7 @@ app.post('/signup',
       [email],
       (error, results) => {
         if (results.length > 0) {
-          errors.push('ユーザー登録に失敗しました');
+          errors.push('入力されたメールアドレスは既に登録されています。');
           res.render('signup.ejs', { errors: errors });
         } else {
           next();
@@ -204,6 +204,7 @@ app.get('/logout', (req, res) => {
 app.post('/api/save', (req, res) => {
   const { study_date, content, measurement_time } = req.body;
   const user_id = req.session.userId;
+  console.log(study_date);
   connection_record.query(
     'INSERT INTO study_record (user_id, study_date, measurement_time, content) VALUES (?, ?, ?, ?)',
     [user_id, study_date, measurement_time, content],
@@ -227,24 +228,8 @@ function formatDate(dateString) {
   return `${year}年${month}月${day}日`;
 }
 
-app.get('/mypage', (req, res) => {
-  const user_id = req.session.userId;
-  connection_record.query(
-    'SELECT * FROM study_record where user_id = ?',
-    [user_id],
-    (error, results) => {
-      if (error) {
-        console.log(error);
-      }
-      res.render('mypage.ejs', { 
-        records: results,
-        formatDate: formatDate
-      });
-    }
-  );
-});
-
 app.get('/room', (req, res) => {
+  //24時間経過している席があった場合、席を解放
   connection_seats.query(
     'SELECT * FROM seats',
     (error, results) => {
@@ -286,5 +271,52 @@ app.post('/api/release', (req, res) => {
   connection_seats.query('UPDATE seats SET user_id = 0 WHERE id = ?', [seatIndex], (error) => {
     if (error) throw error;
     res.json({ success: true });
+  });
+});
+
+app.get('/mypage', (req, res) => {
+  const user_id = req.session.userId;
+  connection_record.query(
+    'SELECT * FROM study_record where user_id = ? ORDER BY study_date DESC',
+    [user_id],
+    (error, results) => {
+      if (error) {
+        console.log(error);
+      }
+      res.render('mypage.ejs', { 
+        records: results,
+        formatDate: formatDate
+      });
+    }
+  );
+});
+
+//マイページ内の表示期間の変更
+app.get('/api/records', (req, res) => {
+  const period = req.query.period;
+  let startDate;
+  
+  switch (period) {
+      case 'week':
+          startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+          break;
+      case 'month':
+          startDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+          break;
+      case 'year':
+          startDate = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000);
+          break;
+      default:
+          startDate = new Date(0); // すべての記録
+  }
+  connection_record.query(
+    'SELECT * FROM study_record WHERE user_id = ? AND study_date >= ? ORDER BY study_date DESC', 
+    [req.session.userId, startDate], (error, results) => {
+      if (error) {
+          console.error('Error fetching records:', error);
+          res.status(500).json({ error: 'Internal server error' });
+      } else {
+          res.json({ records: results });
+      }
   });
 });
