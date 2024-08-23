@@ -38,8 +38,8 @@ export const Users =
 
 export const StudyRecord =
 [
-	{id: 1, user_id: 1, study_date: "2024-09-01", measurement_time: "01:02:03", content: "english"},
-	{id: 2, user_id: 1, study_date: "2024-08-01", measurement_time: "00:30:00", content: "test2"},
+	{id: 1, user_id: 1, study_date: "2022-01-01", measurement_time: "01:02:03", content: "english"},
+	{id: 2, user_id: 1, study_date: "2023-08-01", measurement_time: "00:30:00", content: "test2"},
 	{id: 3, user_id: 1, study_date: "2024-08-23", measurement_time: "00:00:05", content: "words"},
-	{id: 4, user_id: 1, study_date: "2023-01-01", measurement_time: "10:20:30", content: "test test"}
+	{id: 4, user_id: 1, study_date: "2024-10-10", measurement_time: "10:20:30", content: "test test"}
 ];
