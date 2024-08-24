@@ -1,0 +1,89 @@
+.myPageContainer {
+	margin: 20px;
+}
+
+.myPageTitle {
+	font-size: 24px;
+}
+
+.sidebarHr {
+	margin-bottom: 20px;
+}
+
+.displayPeriod {
+	margin: 20px auto;
+	padding: 20px;
+	background-color: #f5f5f5;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .displayPeriodMsg {
+	font-size: 18px;
+	font-weight: bold;
+	margin-bottom: 15px;
+	color: #333;
+  }
+  
+  .form {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+  }
+  
+  .radioButtons {
+	display: flex;
+  }
+  
+  .radioButton {
+	margin-right: 50px; 
+  }
+  
+  .radioButton:last-child {
+	margin-right: 0;
+  }
+  
+  .radioButton label {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+  }
+  
+  .radioButton input[type="radio"] {
+	margin-right: 8px;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	width: 20px;
+	height: 20px;
+	border: 2px solid #007bff;
+	border-radius: 50%;
+	outline: none;
+	transition: 0.2s all linear;
+  }
+  
+  .radioButton input[type="radio"]:checked {
+	border: 6px solid #007bff;
+  }
+  
+  .deceidePeriod {
+	padding: 10px 15px;
+	background-color: #007bff;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	font-size: 16px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+	white-space: nowrap;
+  }
+  
+  .deceidePeriod:hover {
+	background-color: #0056b3;
+  }
+
+  .myPageMsg {
+	font-size: 18px;
+	margin-bottom: 20px;
+  }
+  

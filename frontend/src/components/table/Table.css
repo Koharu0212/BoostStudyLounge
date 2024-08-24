@@ -1,0 +1,36 @@
+.studyRecordTable {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	overflow: hidden;
+  }
+  
+  .studyRecordTable thead {
+	background-color: #007bff;
+	color: white;
+  }
+  
+  .studyRecordTable th,
+  .studyRecordTable td {
+	padding: 12px 15px;
+	text-align: center;
+	border: 1px solid #dddddd;
+  }
+  
+  .studyRecordTable th {
+	font-weight: bold;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	font-size: 14px;
+  }
+  
+  .studyRecordTable tbody tr {
+	border-bottom: 1px solid #dddddd;
+  }
+  
+  .studyRecordTable tbody tr:nth-of-type(even) {
+	background-color: #f3f3f3;
+  }
+  
