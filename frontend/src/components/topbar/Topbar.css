@@ -1,0 +1,61 @@
+.topbar {
+	background-color: #a4c4e8;
+	height: 50px;
+	width: 100%;
+	display: flex;  /*要素を全て横並びにする*/
+	align-items: center; /*中央揃え*/
+	position: stickey; /*上下を常に固定*/
+	top: 0;
+	z-index: 100; /*1番手前に配置*/
+}
+
+.topbarLeft {
+	flex: 3;
+}
+
+.logo {
+	font-size: 24px;
+	margin-left: 20px;
+	font-weight: bold;
+}
+
+.topbarRight {
+	flex: 1;
+	display:flex;
+	align-items: center;
+	justify-content: space-around;
+}
+
+.topbarIcons {
+	display: flex;
+}
+
+.topbarIcon {
+	margin-right: 30px;
+	position: relative;
+	cursor: pointer;
+}
+
+.topbarIconText {
+	opacity: 0; /* はじめは隠しておく */
+	visibility: hidden; /* はじめは隠しておく */
+	position: absolute; /* 絶対配置 */
+	left: 50%; /* 親に対して中央配置 */
+	transform: translateX(-50%); /* 親に対して中央配置 */
+	bottom: -30px; /* 親要素下からの位置 */
+	display: inline-block;
+	padding: 5px; /* 余白 */
+	white-space: nowrap; /* テキストを折り返さない */
+	font-size: 0.8rem; /* フォントサイズ */
+	line-height: 1.3; /* 行間 */
+	background: #333; /* 背景色 */
+	color: #fff; /* 文字色 */
+	border-radius: 3px; /* 角丸 */
+	transition: 0.3s ease-in; /* アニメーション */
+  }
+  
+  /* ホバー時にツールチップの非表示を解除 */
+  .topbarIcon:hover .topbarIconText {
+	opacity: 1;
+	visibility: visible;
+  }

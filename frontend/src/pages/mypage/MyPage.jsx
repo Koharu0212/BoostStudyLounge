@@ -19,8 +19,11 @@ export default function myPage() {
 					<div className="displayPeriodMsg">表示期間</div>
 					<form className="form">
 						<div className="radioButtons">
+						<div className="radioButton">
+								<label><input type="radio" id="all" name="period" value="all" defaultChecked={true}/>すべて</label>
+							</div>
 							<div className="radioButton">
-								<label><input type="radio" id="1week" name="period" value="1week" defaultChecked={true}/>1週間</label>
+								<label><input type="radio" id="1week" name="period" value="1week" />1週間</label>
 							</div>
 							<div className="radioButton">
 								<label><input type="radio" id="1month" name="period" value="1month" />1ヶ月</label>
