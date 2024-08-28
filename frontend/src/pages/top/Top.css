@@ -67,7 +67,7 @@
 	background-color: #41428b;
 }
 
-.loginButton:hover {
+.topLoginButton:hover {
 	opacity: 1;
 	transition: 0.3s;
 }
@@ -85,7 +85,7 @@
 	opacity: 0.7;
 }
 
-.registerButton:hover {
+.topRegisterButton:hover {
 	opacity: 1;
 	transition: 0.3s;
 }
