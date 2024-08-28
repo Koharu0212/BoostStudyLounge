@@ -15,8 +15,8 @@ export default function Top() {
             <div className="topMsg">オンライン自習室へようこそ</div>
           </div>
           <div className="topButton">
-            <button className="loginButton" onClick={() => navigate('/login')}>ログイン</button>
-            <button className="registerButton" onClick={() => navigate('/register')}>新規登録</button>
+            <button className="topLoginButton" onClick={() => navigate('/login')}>ログイン</button>
+            <button className="topRegisterButton" onClick={() => navigate('/register')}>新規登録</button>
           </div>
         </div>
       </div>

@@ -54,7 +54,7 @@
 	width: 100%;
 }
 
-.loginButton {
+.topLoginButton {
 	height: 50px;
 	width: 150px;
 	border-radius: 10px;
@@ -72,7 +72,7 @@
 	transition: 0.3s;
 }
 
-.registerButton {
+.topRegisterButton {
 	height: 50px;
 	width: 150px;
 	border-radius: 10px;
