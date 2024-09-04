@@ -25,26 +25,6 @@ app.use(cors({
   optionsSuccessStatus: 200 
 }));
 
-//セッションの利用設定
-app.use(
-  session({
-    secret: 'my_secret_key',
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-
-app.use((req, res, next) => {
-  if (req.session.userId === undefined) {
-    res.locals.username = 'ゲスト';
-    res.locals.isLoggedIn = false;
-  } else {
-    res.locals.username = req.session.username;
-    res.locals.isLoggedIn = true;
-  }
-  next();
-});
-
 // サーバを起動
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
@@ -73,6 +53,32 @@ app.get('/', (req, res) => {
   } catch (error) {
       console.error(error)
   }
+})
+
+//ユーザ情報を取得
+app.get('/api/users', (req, res) => {
+  connection.query(
+    'SELECT user_id, username FROM users',
+    (error, results) => {
+      if (error) {
+        return res.status(500).json({ error: 'Database query failed' });
+      }
+      return res.status(200).json(results);
+    }
+  )
+})
+
+//座席情報を取得
+app.get('/api/seats', (req, res) => {
+  connection.query(
+    'SELECT * FROM seats',
+    (error, results) => {
+      if (error) {
+        return res.status(500).json({ error: 'Database query failed' });
+      }
+      return res.status(200).json(results);
+    }
+  )
 })
 
 //勉強記録を取得
