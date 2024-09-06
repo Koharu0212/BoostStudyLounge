@@ -1,9 +1,9 @@
 CREATE DATABASE boost_study_lounge;
 CREATE TABLE users (
   user_id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  username varchar(20) DEFAULT NULL,
-  email varchar(100) DEFAULT NULL,
-  password varchar(60) DEFAULT NULL
+  username varchar(20) UNIQUE NOT NULL,
+  email varchar(100) UNIQUE NOT NULL,
+  password varchar(60) UNIQUE NOT NULL
 );
 
 CREATE TABLE study_record (
