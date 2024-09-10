@@ -55,6 +55,54 @@ app.get('/', (req, res) => {
   }
 })
 
+//ログイン
+app.post('/api/auth/login', (req, res) => {
+  connection.query(
+    'SELECT * FROM users where email = ?',
+    [req.body.email, req.body.password],
+    (error, results) => {
+      if (error) {
+        return res.status(500).json({ error: 'Database query failed' });
+      }
+
+      //emailが一致しなかった場合
+      if(results.length === 0) {
+        return res.status(404).json("ユーザが見つかりません");
+      }
+
+      const vailedPassword = req.body.password === results[0].password;      
+      if(!vailedPassword) {
+        return res.status(400).json("パスワードが違います");
+      }
+      
+      return res.status(200).json(results);
+    }
+  )
+})
+
+//ユーザ登録
+app.post('/api/auth/register', (req, res) => {
+  const { username, email, password } = req.body;
+
+  // パスワードのハッシュ化
+
+  connection.query(
+    'INSERT INTO users (username, email, password) SELECT ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = ? OR email = ?)',
+    [username, email, password, username, email],
+    (error, results) => {
+      if (error) {
+        return res.status(500).json({ error: 'Database query failed' });
+      }
+
+      if (results.affectedRows === 0) {
+        return res.status(409).json({ message: '同じユーザ名またはメールアドレスが既に存在します。' });
+      }
+
+      return res.status(201).json({ message: 'ユーザ登録が完了しました。' });
+    }
+  );
+});
+
 //ユーザ情報を取得
 app.get('/api/users', (req, res) => {
   connection.query(
