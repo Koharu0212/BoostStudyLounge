@@ -1,12 +1,10 @@
-// Room.jsx
 import React, { useContext, useState, useEffect } from 'react';
 import './Room.css';
 import Topbar from '../../components/topbar/Topbar';
 import Seat from '../../components/seat/Seat';
 import SeatLegend from '../../components/seatLegend/SeatLegend';
 import ModalComponent from '../../components/modalComponent/ModalComponent';
-// import { Seats, Users } from '../../dummyData';
-import { ModalContext } from '../../ModalProvider';
+import { ModalContext } from '../../state/ModalProvider';
 import axios from 'axios';
 
 export default function Room() {
