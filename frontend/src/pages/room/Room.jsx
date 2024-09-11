@@ -6,9 +6,11 @@ import SeatLegend from '../../components/seatLegend/SeatLegend';
 import ModalComponent from '../../components/modalComponent/ModalComponent';
 import { ModalContext } from '../../state/ModalProvider';
 import axios from 'axios';
+import { AuthContext } from '../../state/AuthContext';
 
 export default function Room() {
-  const currentUserId = 1; //ログイン中のuser id
+  const { user } = useContext(AuthContext);
+  const currentUserId = user[0].user_id; //ログイン中のuser id
   const [seats, setSeats] = useState([]);
   const [users, setUsers] = useState([]);
 
