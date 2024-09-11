@@ -43,7 +43,7 @@ connection.connect((err) => {
     console.log('error connecting: ' + err.stack);
     return;
   }
-  console.log('connection success');
+  console.log('DBと接続中');
 });
 
 app.get('/', (req, res) => {
@@ -59,10 +59,10 @@ app.get('/', (req, res) => {
 app.post('/api/auth/login', (req, res) => {
   connection.query(
     'SELECT * FROM users where email = ?',
-    [req.body.email, req.body.password],
-    (error, results) => {
+    [req.body.email],
+    async (error, results) => {
       if (error) {
-        return res.status(500).json({ error: 'Database query failed' });
+        return res.status(500).json({ error: "クエリに失敗しました"});
       }
 
       //emailが一致しなかった場合
@@ -70,7 +70,7 @@ app.post('/api/auth/login', (req, res) => {
         return res.status(404).json("ユーザが見つかりません");
       }
 
-      const vailedPassword = req.body.password === results[0].password;      
+      const vailedPassword = await bcrypt.compare(req.body.password, results[0].password);      
       if(!vailedPassword) {
         return res.status(400).json("パスワードが違います");
       }
@@ -81,26 +81,32 @@ app.post('/api/auth/login', (req, res) => {
 })
 
 //ユーザ登録
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
   const { username, email, password } = req.body;
-
-  // パスワードのハッシュ化
-
-  connection.query(
-    'INSERT INTO users (username, email, password) SELECT ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = ? OR email = ?)',
-    [username, email, password, username, email],
-    (error, results) => {
-      if (error) {
-        return res.status(500).json({ error: 'Database query failed' });
+  
+  try {
+    // パスワードのハッシュ化
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    
+    connection.query(
+      'INSERT INTO users (username, email, password) SELECT ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = ? OR email = ?)',
+      [username, email, hashedPassword, username, email],
+      (error, results) => {
+        if (error) {
+          return res.status(500).json({ error: 'クエリに失敗しました' });
+        }
+  
+        if (results.affectedRows === 0) {
+          return res.status(409).json({ message: '同じユーザ名またはメールアドレスが既に存在します。' });
+        }
+  
+        return res.status(201).json({ message: 'ユーザ登録が完了しました。' });
       }
-
-      if (results.affectedRows === 0) {
-        return res.status(409).json({ message: '同じユーザ名またはメールアドレスが既に存在します。' });
-      }
-
-      return res.status(201).json({ message: 'ユーザ登録が完了しました。' });
-    }
-  );
+    );
+  } catch (err) {
+    return res.status(500).json({ error: 'パスワードのハッシュ化に失敗しました' });
+  }
 });
 
 //ユーザ情報を取得
@@ -109,7 +115,7 @@ app.get('/api/users', (req, res) => {
     'SELECT user_id, username FROM users',
     (error, results) => {
       if (error) {
-        return res.status(500).json({ error: 'Database query failed' });
+        return res.status(500).json({ error: 'クエリに失敗しました' });
       }
       return res.status(200).json(results);
     }
@@ -122,7 +128,7 @@ app.get('/api/seats', (req, res) => {
     'SELECT * FROM seats',
     (error, results) => {
       if (error) {
-        return res.status(500).json({ error: 'Database query failed' });
+        return res.status(500).json({ error: 'クエリに失敗しました' });
       }
       return res.status(200).json(results);
     }
@@ -138,7 +144,7 @@ app.get('/api/records/:username', (req, res) => {
     [username],
     (error, results) => {
       if (error) {
-        return res.status(500).json({ error: 'Database query failed' });
+        return res.status(500).json({ error: 'クエリに失敗しました' });
       }
       if (results.length === 0) {
         return res.status(404).json({ error: 'User not found' });
@@ -150,7 +156,7 @@ app.get('/api/records/:username', (req, res) => {
         [userId],
         (error, results) => {
           if (error) {
-            return res.status(500).json({ error: 'Database query failed' });
+            return res.status(500).json({ error: 'クエリに失敗しました' });
           }
           return res.status(200).json(results);
         }
