@@ -12,3 +12,7 @@ export const LoginError = (error) => ({
 	type: "LOGIN_ERROR",
 	payload: error,
 });
+
+export const Logout = () => ({
+	type: "LOGOUT",
+});
