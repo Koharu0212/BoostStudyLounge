@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { ModalContext } from '../../ModalProvider';
+import { ModalContext } from '../../state/ModalProvider';
 import { Modal, Box, Typography, IconButton } from '@mui/material';
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -16,36 +16,36 @@ const modalStyle = {
   };
 
 export default function ModalComponent() {
-	const {isModalOpen, modalContent, closeModal} = useContext(ModalContext);
+	const { isModalOpen, modalContent, closeModal } = useContext(ModalContext);
 
-  return (
-	<>
-		<div>
-			<Modal
-				open={isModalOpen}
-				onClose={closeModal}
-				aria-labelledby="modal-modal-title"
-				aria-describedby="modal-modal-description"
-			>
-				<Box sx={modalStyle}>
-				<IconButton
-					aria-label="close"
-					onClick={closeModal}
-					sx={{
-					position: 'absolute',
-					right: 8,
-					top: 8,
-					color: (theme) => theme.palette.grey[500],
-					}}
+	return (
+		<>
+			<div>
+				<Modal
+					open={isModalOpen}
+					onClose={closeModal}
+					aria-labelledby="modal-modal-title"
+					aria-describedby="modal-modal-description"
 				>
-					<CloseIcon />
-				</IconButton>
-				<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-					{modalContent}
-				</Typography>
-				</Box>
-			</Modal>
-		</div>
-	</>
-  )
+					<Box sx={modalStyle}>
+					<IconButton
+						aria-label="close"
+						onClick={closeModal}
+						sx={{
+						position: 'absolute',
+						right: 8,
+						top: 8,
+						color: (theme) => theme.palette.grey[500],
+						}}
+					>
+						<CloseIcon />
+					</IconButton>
+					<Typography id="modal-modal-description" sx={{ mt: 2 }}>
+						{modalContent}
+					</Typography>
+					</Box>
+				</Modal>
+			</div>
+		</>
+	)
 }

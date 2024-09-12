@@ -14,9 +14,6 @@ export default function Register() {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 	
-		console.log(password.current.value);
-		console.log(passwordConfirmation.current.value);
-	
 		//パスワードと確認用パスワードが合っているかどうか確認
 		if (password.current.value !== passwordConfirmation.current.value) {
 			passwordConfirmation.current.setCustomValidity("パスワードが違います");
@@ -28,8 +25,7 @@ export default function Register() {
 			  password: password.current.value,
 			};
 			
-			const response = await axios.post("http://localhost:3001/api/auth/register", user);
-			console.log(response);
+			await axios.post("http://localhost:3001/api/auth/register", user);
 			navigate("/login");
 		  } catch (err) {
 			console.log(err);

@@ -6,7 +6,6 @@ import Register from "./pages/register/Register";
 import Room from "./pages/room/Room";
 import MyPage from './pages/mypage/MyPage';
 import Measurement from './pages/measurement/Measurement'
-import ModalProvider from './state/ModalProvider';
 import { AuthContext } from './state/AuthContext';
 
 function App() {
@@ -19,7 +18,7 @@ function App() {
         <Route path="/" element={<Top />} />
         <Route path="/login" element={user ? <Navigate to="/room" /> : <Login />} />
         <Route path="/register" element={user ? <Navigate to="/room" /> : <Register />} />
-        <Route path="/room" element={<ModalProvider><Room /></ModalProvider>} />
+        <Route path="/room" element={user ? <Room /> : <Navigate to="/" />} />
         <Route path="/mypage/:username" element={<MyPage />} />
         <Route path="/measurement/:username" element={<Measurement />} />
       </Routes>
