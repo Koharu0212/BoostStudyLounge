@@ -9,6 +9,8 @@ CREATE TABLE users (
 CREATE TABLE study_record (
   id INT PRIMARY KEY AUTO_INCREMENT,
 	user_id INT NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
   study_date DATE NOT NULL,
 	measurement_time TIME NOT NULL,
 	content text NOT NULL
