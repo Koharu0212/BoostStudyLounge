@@ -13,8 +13,7 @@ CREATE TABLE study_records (
     end_date DATETIME NOT NULL,
     measurement_time INT NOT NULL,
     contents VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE seats (
