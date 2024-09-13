@@ -1,20 +1,26 @@
 CREATE DATABASE boost_study_lounge;
 CREATE TABLE users (
-  user_id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  username varchar(20) UNIQUE NOT NULL,
-  email varchar(100) UNIQUE NOT NULL,
-  password varchar(60) UNIQUE NOT NULL
+  user_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  username VARCHAR(20) UNIQUE NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password VARCHAR(60) UNIQUE NOT NULL
 );
 
-CREATE TABLE study_record (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-	user_id INT NOT NULL,
-  start_date DATE NOT NULL,
-  end_date DATE NOT NULL,
-  study_date DATE NOT NULL,
-	measurement_time TIME NOT NULL,
-	content text NOT NULL
+CREATE TABLE study_records (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    start_date DATETIME NOT NULL,
+    end_date DATETIME NOT NULL,
+    measurement_time INT NOT NULL,
+    contents VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+
+INSERT INTO study_records (user_id, start_date, end_date, measurement_time, contents)
+VALUES (10, '2023-09-14 10:00:00', '2023-09-14 12:00:00', 7200, '英語の勉強'),
+(10, '2024-08-01 10:00:00', '2024-08-01 12:30:00', 10000 , '数学の勉強'),
+(10, '2024-09-10 10:00:00', '2024-09-10 12:00:00', 7200 , 'プログラミング');
 
 CREATE TABLE seats (
   id INT PRIMARY KEY AUTO_INCREMENT,
