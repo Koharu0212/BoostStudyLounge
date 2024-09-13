@@ -17,11 +17,6 @@ CREATE TABLE study_records (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-INSERT INTO study_records (user_id, start_date, end_date, measurement_time, contents)
-VALUES (10, '2023-09-14 10:00:00', '2023-09-14 12:00:00', 7200, '英語の勉強'),
-(10, '2024-08-01 10:00:00', '2024-08-01 12:30:00', 10000 , '数学の勉強'),
-(10, '2024-09-10 10:00:00', '2024-09-10 12:00:00', 7200 , 'プログラミング');
-
 CREATE TABLE seats (
   id INT PRIMARY KEY AUTO_INCREMENT,
   seat_number INT UNIQUE,
