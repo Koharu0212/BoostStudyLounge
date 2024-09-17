@@ -20,7 +20,7 @@ export default function Topbar() {
 			<div className='topbarRight'>
 				<div className="topbarIcons">
 				<div className='topbarIcon'>
-						<Link to={"/room"} style={{textDecoration: "none", color: "black"}}>
+						<Link to="/room" style={{textDecoration: "none", color: "black"}}>
 							<Create />
 							<span className='topbarIconText'>勉強記録</span>
 						</Link>
