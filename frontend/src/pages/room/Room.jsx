@@ -41,7 +41,7 @@ export default function Room() {
   }, []);
   
   const handleSeatClick = (selectedSeat) => {
-    const isOccupied = selectedSeat.user_id !== 0;
+    const isOccupied = selectedSeat.user_id !== null;
     const isCurrentUser = selectedSeat.user_id === currentUserId;
     const occupantName = users.find(user => user.user_id === selectedSeat.user_id)?.username;
 
@@ -61,7 +61,7 @@ export default function Room() {
         <div className="roomLeft">
           <div className="seatContainer">
             {seats.map((seat) => {
-              const isOccupied = seat.user_id !== 0;
+              const isOccupied = seat.user_id !== null;
               const isMine = seat.user_id === currentUserId;
               const occupantName = users.find(user => user.user_id === seat.user_id)?.username;
 
