@@ -13,6 +13,7 @@ export default function Room() {
   const currentUserId = user[0].user_id; //ログイン中のuser id
   const [seats, setSeats] = useState([]);
   const [users, setUsers] = useState([]);
+  const [selectedSeat, setSelectedSeat] = useState(null);
 
   const {openModal} = useContext(ModalContext);
 
@@ -45,13 +46,13 @@ export default function Room() {
     const isCurrentUser = selectedSeat.user_id === currentUserId;
     const occupantName = users.find(user => user.user_id === selectedSeat.user_id)?.username;
 
-    let message;
-    if (isOccupied) {
-      message = isCurrentUser ? 'これはあなたの席です。' : `${occupantName}さんがこの席を使用中です。`;
-    } else {
-      message = 'この席は空いています。';
-    }
-    openModal(message);
+    setSelectedSeat({
+      isOccupied,
+      isCurrentUser,
+      occupantName
+    });
+
+    openModal();
   };
 
   return (
@@ -82,7 +83,11 @@ export default function Room() {
           <SeatLegend />
         </div>
       </div>
-      <ModalComponent />
+      <ModalComponent 
+        isCurrentUser={selectedSeat?.isCurrentUser}
+        isOccupied={selectedSeat?.isOccupied}
+        occupantName={selectedSeat?.occupantName}
+      />
     </>
   );
 }

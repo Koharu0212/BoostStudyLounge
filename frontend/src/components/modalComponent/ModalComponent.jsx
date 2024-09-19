@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { ModalContext } from '../../state/ModalProvider';
 import { Modal, Box, Typography, IconButton } from '@mui/material';
 import CloseIcon from "@mui/icons-material/Close";
+import StudyRecordModal from '../studyRecordModal/StudyRecordModal';
 
 const modalStyle = {
     position: 'absolute',
@@ -15,8 +16,20 @@ const modalStyle = {
     p: 4,
   };
 
-export default function ModalComponent() {
-	const { isModalOpen, modalContent, closeModal } = useContext(ModalContext);
+export default function ModalComponent({ isCurrentUser, isOccupied, occupantName }) {
+	const { isModalOpen, closeModal } = useContext(ModalContext);
+
+	const renderModalContent = () => {
+        if (isCurrentUser || !isOccupied) {
+            return <StudyRecordModal />;
+        } else if (isOccupied && !isCurrentUser) {
+            return (
+                <Typography variant="h6" component="h2">
+                    {occupantName}さんが着席しています
+                </Typography>
+            );
+        }
+    };
 
 	return (
 		<>
@@ -40,9 +53,7 @@ export default function ModalComponent() {
 					>
 						<CloseIcon />
 					</IconButton>
-					<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-						{modalContent}
-					</Typography>
+					{renderModalContent()}
 					</Box>
 				</Modal>
 			</div>
