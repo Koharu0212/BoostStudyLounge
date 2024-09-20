@@ -5,7 +5,7 @@ const connection = require('../config/database');
 //座席情報を取得
 router.get('/', (req, res) => {
 	connection.query(
-	  'SELECT * FROM seats',
+	  'SELECT * FROM seats ORDER BY seat_id',
 	  (error, results) => {
 		if (error) {
 		  return res.status(500).json({ error: 'クエリに失敗しました' });
