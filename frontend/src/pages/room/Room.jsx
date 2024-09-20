@@ -68,8 +68,8 @@ export default function Room() {
 
               return (
                 <Seat 
-                  key={seat.id}
-                  seatNumber={seat.id}
+                  key={seat.seat_id}
+                  seatNumber={seat.seat_id}
                   isOccupied={isOccupied}
                   isMine={isMine}
                   occupantName={occupantName}
