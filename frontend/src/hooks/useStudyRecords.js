@@ -19,24 +19,23 @@ export default function useStudyRecords(username) {
     }, [username]);
 
     useEffect(() => {
+        const filteredData = () => {
+            const currentDate = new Date();
+            const filteredRecords = records.filter(record => {
+                const recordDate = new Date(record.study_date);
+                const daysDiff = (currentDate - recordDate) / (1000 * 60 * 60 * 24);
+                switch (appliedPeriod) {
+                    case '1week': return daysDiff <= 7;
+                    case '1month': return daysDiff <= 30;
+                    case '1year': return daysDiff <= 365;
+                    default: return true;
+                }
+            });
+            const sortedData = filteredRecords.sort((a, b) => Date.parse(b.study_date) - Date.parse(a.study_date));
+            setRecords(sortedData);
+        }
         filteredData();
-    }, [appliedPeriod]);
-
-	const filteredData = () => {
-		const currentDate = new Date();
-        const filteredData = records.filter(record => {
-            const recordDate = new Date(record.study_date);
-            const daysDiff = (currentDate - recordDate) / (1000 * 60 * 60 * 24);
-            switch (appliedPeriod) {
-                case '1week': return daysDiff <= 7;
-                case '1month': return daysDiff <= 30;
-                case '1year': return daysDiff <= 365;
-                default: return true;
-            }
-        });
-        const sortedData = filteredData.sort((a, b) => Date.parse(b.study_date) - Date.parse(a.study_date));
-        setRecords(sortedData);
-	}
+    }, [records, appliedPeriod]);
 
     const handlePeriodChange = (e) => {
 		e.preventDefault();
