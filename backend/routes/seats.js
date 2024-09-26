@@ -8,10 +8,25 @@ router.get('/', (req, res) => {
 	  'SELECT * FROM seats ORDER BY seat_id',
 	  (error, results) => {
 		if (error) {
-		  return res.status(500).json({ error: 'クエリに失敗しました' });
+			console.log(error);
+			return res.status(500).json({ error: 'クエリに失敗しました' });
 		}
 		return res.status(200).json(results);
 	  }
+	)
+  })
+
+  //ユーザが着席している席を取得
+  router.get('/:userId', (req, res) => {
+	connection.query(
+		'SELECT seat_id FROM seats WHERE user_id = ?',
+		[req.params.userId],
+		(error, results) => {
+			if(error) {
+				return res.status(500).json({ error: 'クエリに失敗しました' });
+			}
+			return res.status(200).json(results);
+		}
 	)
   })
 
