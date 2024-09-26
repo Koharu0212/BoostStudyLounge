@@ -4,7 +4,7 @@ import Topbar from '../../components/topbar/Topbar';
 import Seat from '../../components/seat/Seat';
 import SeatLegend from '../../components/seatLegend/SeatLegend';
 import ModalComponent from '../../components/modalComponent/ModalComponent';
-import { ModalContext } from '../../state/ModalProvider';
+import { ModalContext } from '../../state/ModalContext';
 import axios from 'axios';
 import { AuthContext } from '../../state/AuthContext';
 
@@ -18,7 +18,7 @@ export default function Room() {
   const {openModal} = useContext(ModalContext);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchSeats = async () => {
         try {
             const response = await axios.get(`http://localhost:3001/api/seats`);
             setSeats(response.data);
@@ -26,7 +26,7 @@ export default function Room() {
             console.log(error);
         }
     };
-    fetchUser();
+    fetchSeats();
   }, []);
 
   useEffect(() => {
@@ -42,11 +42,13 @@ export default function Room() {
   }, []);
   
   const handleSeatClick = (selectedSeat) => {
+    const seatId = selectedSeat.seat_id;
     const isOccupied = selectedSeat.user_id !== null;
     const isCurrentUser = selectedSeat.user_id === currentUserId;
     const occupantName = users.find(user => user.user_id === selectedSeat.user_id)?.username;
 
     setSelectedSeat({
+      seatId,
       isOccupied,
       isCurrentUser,
       occupantName
@@ -84,6 +86,7 @@ export default function Room() {
         </div>
       </div>
       <ModalComponent 
+        seatId={selectedSeat?.seatId}
         isCurrentUser={selectedSeat?.isCurrentUser}
         isOccupied={selectedSeat?.isOccupied}
         occupantName={selectedSeat?.occupantName}
