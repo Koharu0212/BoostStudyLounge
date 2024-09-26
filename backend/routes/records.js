@@ -20,7 +20,7 @@ router.get('/:username', (req, res) => {
   
 		const userId = results[0].user_id;
 		connection.query(
-		  'SELECT * FROM study_record WHERE user_id = ?',
+		  'SELECT * FROM study_records WHERE user_id = ?',
 		  [userId],
 		  (error, results) => {
 			if (error) {
@@ -35,17 +35,13 @@ router.get('/:username', (req, res) => {
 
   //勉強時間・内容を記録
   router.post('/:userId', (req, res) => {
-	const user_id = req.params.userId;
-	const start_date = req.body.start_date;
-	const end_date = req.body.end_date;
-	const contents = req.body.contents;
-
-	//計測時間(s)の算出
-	const measurement_time = moment(end_date).diff(moment(start_date), 'second');
-
+	const { userId, startDate, endDate, measurementTime, contents } = req.body;
+	if(userId !== req.body.userId) {
+		res.status(403).json({ error: '他のユーザの勉強記録は保存できません' });
+	}
 	connection.query(
 		'INSERT INTO study_records (user_id, start_date, end_date, measurement_time, contents) VALUES (?, ?, ?, ?, ?)',
-		[user_id, start_date, end_date, measurement_time, contents],
+		[userId, startDate, endDate, measurementTime, contents],
 		(error, results) => {
 			if (error) {
 				console.log(error);

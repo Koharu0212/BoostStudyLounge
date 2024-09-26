@@ -17,6 +17,7 @@ router.get('/', (req, res) => {
 
   //着席
   router.put('/occupy', (req, res) => {
+	const { userId, seatId } = req.body;
 	connection.beginTransaction((err) => {
 	  if (err) {
 		return res.status(500).json({ error: 'トランザクションの開始に失敗しました' });
@@ -25,7 +26,7 @@ router.get('/', (req, res) => {
 	  //席が空いているか確認
 	  connection.query(
 		'SELECT user_id FROM seats WHERE seat_id = ? FOR UPDATE', //他のユーザが着席できないよう排他制御
-		[req.body.seatId],
+		[seatId],
 		(error, results) => {
 		  if (error) {
 			return connection.rollback(() => {
@@ -48,7 +49,7 @@ router.get('/', (req, res) => {
 		  //ユーザーが既に他の席に座っていないか確認
 		  connection.query(
 			'SELECT seat_id FROM seats WHERE user_id = ?',
-			[req.body.userId],
+			[userId],
 			(error, results) => {
 			  if (error) {
 				return connection.rollback(() => {
@@ -64,8 +65,8 @@ router.get('/', (req, res) => {
   
 			  //席を更新
 			  connection.query(
-				'UPDATE seats SET user_id = ? WHERE seat_id = ?',
-				[req.body.userId, req.body.seatId],
+				'UPDATE seats SET user_id = ?, start_time = CURRENT_TIMESTAMP WHERE seat_id = ?',
+				[userId, seatId],
 				(error, results) => {
 				  if (error) {
 					return connection.rollback(() => {
@@ -100,8 +101,7 @@ router.get('/', (req, res) => {
 	  [seatId],
 	  (error, results) => {
 		if (error) {
-			console.log(error);
-		  return res.status(500).json({ error: 'クエリに失敗しました(着席の確認)' });
+		  return res.status(500).json({ error: 'クエリに失敗しました' });
 		}
   
 		// 存在しない場合
@@ -118,8 +118,8 @@ router.get('/', (req, res) => {
   
 		// 席の開放
 		connection.query(
-			'UPDATE seats SET user_id = NULL WHERE seat_id = ?',
-			[req.body.seatId],
+			'UPDATE seats SET user_id = NULL, start_time = NULL WHERE seat_id = ?',
+			[seatId],
 			(error, results) => {
 			  if (error) {
 				  res.status(500).json({ error: 'クエリに失敗しました' });
@@ -130,5 +130,22 @@ router.get('/', (req, res) => {
 		}
 	  );
 	});
+
+	router.get('/status/:seatId', (req, res) => {
+		const seatId = req.params.seatId;
+		connection.query(
+		  'SELECT user_id, start_time FROM seats WHERE seat_id = ?',
+		  [seatId],
+		  (error, results) => {
+			if (error) {
+			  return res.status(500).json({ error: 'クエリに失敗しました' });
+			}
+			if (results.length === 0) {
+			  return res.status(404).json({ error: '指定された席が見つかりません' });
+			}
+			return res.status(200).json(results[0]);
+		  }
+		);
+	  });
 
   module.exports = router;
