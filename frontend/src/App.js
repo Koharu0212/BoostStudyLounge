@@ -5,7 +5,6 @@ import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import Room from "./pages/room/Room";
 import MyPage from './pages/mypage/MyPage';
-import Measurement from './pages/measurement/Measurement'
 import { AuthContext } from './state/AuthContext';
 
 function App() {
@@ -20,7 +19,6 @@ function App() {
         <Route path="/register" element={user ? <Navigate to="/room" /> : <Register />} />
         <Route path="/room" element={user ? <Room /> : <Navigate to="/" />} />
         <Route path="/mypage/:username" element={<MyPage />} />
-        <Route path="/measurement/:username" element={<Measurement />} />
       </Routes>
     </Router>
   );

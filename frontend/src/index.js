@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { AuthContextProvider } from './state/AuthContext';
-import ModalProvider from './state/ModalProvider';
+import ModalProvider from './state/ModalContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -10,7 +10,7 @@ root.render(
     <AuthContextProvider>
     <ModalProvider>
       <App />
-      </ModalProvider>
+    </ModalProvider>
     </AuthContextProvider>
   </React.StrictMode>
 );
