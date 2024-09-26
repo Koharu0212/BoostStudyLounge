@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { ModalContext } from '../../state/ModalProvider';
+import { ModalContext } from '../../state/ModalContext';
 import { Modal, Box, Typography, IconButton } from '@mui/material';
 import CloseIcon from "@mui/icons-material/Close";
 import StudyRecordModal from '../studyRecordModal/StudyRecordModal';
@@ -16,12 +16,12 @@ const modalStyle = {
     p: 4,
   };
 
-export default function ModalComponent({ isCurrentUser, isOccupied, occupantName }) {
+export default function ModalComponent({ seatId, isCurrentUser, isOccupied, occupantName }) {
 	const { isModalOpen, closeModal } = useContext(ModalContext);
 
 	const renderModalContent = () => {
         if (isCurrentUser || !isOccupied) {
-            return <StudyRecordModal />;
+            return <StudyRecordModal seatId={seatId}/>;
         } else if (isOccupied && !isCurrentUser) {
             return (
                 <Typography variant="h6" component="h2">
