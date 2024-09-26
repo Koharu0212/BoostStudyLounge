@@ -36,7 +36,9 @@ router.get('/:username', (req, res) => {
   //勉強時間・内容を記録
   router.post('/:userId', (req, res) => {
 	const { userId, startDate, endDate, measurementTime, contents } = req.body;
-	if(userId !== req.body.userId) {
+	console.log(userId);
+	console.log(req.paraq.userId);
+	if(userId !== req.params.userId) {
 		res.status(403).json({ error: '他のユーザの勉強記録は保存できません' });
 	}
 	connection.query(
@@ -47,7 +49,7 @@ router.get('/:username', (req, res) => {
 				console.log(error);
 				return res.status(500).json({ error: 'クエリに失敗しました' });
 			}
-			return res.status(200).json(results);
+			return res.status(200).json();
 		}
 	);
   })
