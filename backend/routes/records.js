@@ -34,13 +34,8 @@ router.get('/:username', (req, res) => {
   })
 
   //勉強時間・内容を記録
-  router.post('/:userId', (req, res) => {
+  router.post('/', (req, res) => {
 	const { userId, startDate, endDate, measurementTime, contents } = req.body;
-	console.log(userId);
-	console.log(req.paraq.userId);
-	if(userId !== req.params.userId) {
-		res.status(403).json({ error: '他のユーザの勉強記録は保存できません' });
-	}
 	connection.query(
 		'INSERT INTO study_records (user_id, start_date, end_date, measurement_time, contents) VALUES (?, ?, ?, ?, ?)',
 		[userId, startDate, endDate, measurementTime, contents],
