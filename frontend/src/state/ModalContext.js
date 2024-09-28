@@ -1,24 +1,27 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useState, useCallback } from 'react';
 
 export const ModalContext = createContext();
 
-export default function ModalProvider({children}) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalContent, setModalContent] = useState(null);
+export default function ModalProvider({ children }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [onModalClose, setOnModalClose] = useState(() => {});
 
-    const openModal = (content) => {
-        setIsModalOpen(true);
-        setModalContent(content);
-    };
+  const openModal = useCallback(() => {
+    setIsModalOpen(true);
+  }, []);
 
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setModalContent(null);
-    };
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+    onModalClose();
+  }, [onModalClose]);
 
-    return (
-        <ModalContext.Provider value={{isModalOpen, modalContent, openModal, closeModal}}>
-            {children}
-        </ModalContext.Provider>
-    )
-}
+  const setModalCloseCallback = useCallback((callback) => {
+    setOnModalClose(() => callback);
+  }, []);
+
+  return (
+    <ModalContext.Provider value={{ isModalOpen, openModal, closeModal, setModalCloseCallback }}>
+      {children}
+    </ModalContext.Provider>
+  );
+};
