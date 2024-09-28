@@ -59,6 +59,7 @@ export default function StudyRecordModal({ seatId }) {
 			});
 		} catch (err) {
 			console.error("着席エラー:", err);
+			setIsTimerRunning(false);
 		}
 	};
 
@@ -68,28 +69,25 @@ export default function StudyRecordModal({ seatId }) {
 		setIsTimerRunning(false);
 		setEndTime(currentTime);
 		if(!studyContent.trim()) {
-			console.log('勉強内容が空です')
 			setOpenDialog(true);
 		} else {
 			try {
-				console.log(currentTime);
-				await axios.put("http://localhost:3001/api/seats/vacate", {
-					userId: user[0].user_id,
-					seatId: seatId
-				});
-				await finishStudy(currentTime);
+				await finishStudy(currentTime); //離席処理と記録
 			} catch (err) {
-				  console.error("離席エラー:", err);
+				console.error("離席エラー:", err);
+				setIsTimerRunning(true);
 			}
 		}
  	};
 
 	const finishStudy = async (currentTime) => {
 		try {
-			//勉強記録をデータベースに記録
-			console.log(studyContent);
+			await axios.put("http://localhost:3001/api/seats/vacate", {
+				userId: user[0].user_id,
+				seatId: seatId
+			});
 			const studyTime = Math.floor((currentTime - startTime) / 1000);
-			await axios.post(`http://localhost:3001/api/records/${user[0].user_id}`,{
+			await axios.post(`http://localhost:3001/api/records/`,{
 				userId: user[0].user_id,
 				startDate: formatDate(startTime),
         		endDate: formatDate(currentTime),
@@ -113,8 +111,11 @@ export default function StudyRecordModal({ seatId }) {
 	const handleConfirmDialog = async () => {
 		if (studyContent.trim()) {
 			setOpenDialog(false);
-			console.log(endTime);
-			await finishStudy(endTime);
+			try {
+				await finishStudy(endTime);
+			} catch (err) {
+				console.error("離席エラー:", err);
+			}
 		} else {
 			setOpenDialog(true);
 		}
