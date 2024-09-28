@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Box, TextField, Button, Typography } from '@mui/material';
-import { AuthContext } from '../../state/AuthContext';
 import axios from 'axios';
-import { formatDate } from '../../utils/dateUtils';
+import { AuthContext } from '../../state/AuthContext';
 import { ModalContext } from  '../../state/ModalContext';
+import { formatDate } from '../../utils/dateUtils';
 import { useTimer } from '../../hooks/useTimer';
 import StudyContentDialog  from '../studyContentDialog/StudyContentDialog';
 import ErrorDialog from '../errorDialog/ErrorDialog';
@@ -34,7 +34,7 @@ export default function StudyRecordModal({ seatId }) {
 			}
 		};
 		fetchSeatStatus();
-	  }, [seatId, user]);
+	}, [seatId, user]);
 
 	//勉強内容を取得
 	const handleContentChange = (event) => {
