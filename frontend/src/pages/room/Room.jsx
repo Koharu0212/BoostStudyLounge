@@ -10,36 +10,42 @@ import { AuthContext } from '../../state/AuthContext';
 
 export default function Room() {
   const { user } = useContext(AuthContext);
+  const { openModal, setModalCloseCallback } = useContext(ModalContext);
   const currentUserId = user[0].user_id; //ログイン中のuser id
   const [seats, setSeats] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedSeat, setSelectedSeat] = useState(null);
 
-  const {openModal} = useContext(ModalContext);
+  const fetchSeats = async () => {
+    try {
+        const response = await axios.get(`http://localhost:3001/api/seats`);
+        setSeats(response.data);
+    } catch (error) {
+        console.log(error);
+    }
+  };
 
+  //user_idを取得
+  const fetchUser = async () => {
+    try {
+        const response = await axios.get(`http://localhost:3001/api/users`);
+        setUsers(response.data);
+    } catch (error) {
+        console.log(error);
+    }
+  };
+
+  //初期ロード
   useEffect(() => {
-    const fetchSeats = async () => {
-        try {
-            const response = await axios.get(`http://localhost:3001/api/seats`);
-            setSeats(response.data);
-        } catch (error) {
-            console.log(error);
-        }
-    };
     fetchSeats();
-  }, []);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-        try {
-            const response = await axios.get(`http://localhost:3001/api/users`);
-            setUsers(response.data);
-        } catch (error) {
-            console.log(error);
-        }
-    };
     fetchUser();
   }, []);
+
+  //モーダルが閉じられた際、座席を再表示
+  useEffect(() => {
+    setModalCloseCallback(fetchSeats);
+  }, [setModalCloseCallback]);
+
   
   const handleSeatClick = (selectedSeat) => {
     const seatId = selectedSeat.seat_id;
