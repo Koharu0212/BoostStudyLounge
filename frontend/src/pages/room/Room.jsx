@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useCallback } from 'react';
 import './Room.css';
 import Topbar from '../../components/topbar/Topbar';
 import Seat from '../../components/seat/Seat';
@@ -16,35 +16,36 @@ export default function Room() {
   const [users, setUsers] = useState([]);
   const [selectedSeat, setSelectedSeat] = useState(null);
 
-  const fetchSeats = async () => {
+  //座席情報を取得
+  const fetchSeats = useCallback(async () => {
     try {
-        const response = await axios.get(`http://localhost:3001/api/seats`);
-        setSeats(response.data);
+      const response = await axios.get(`http://localhost:3001/api/seats`);
+      setSeats(response.data);
     } catch (error) {
-        console.log(error);
+      console.error('Error fetching seats:', error);
     }
-  };
+  }, []);
 
-  //user_idを取得
-  const fetchUser = async () => {
+  //全てのユーザのuser_idの取得
+  const fetchUsers = useCallback(async () => {
     try {
-        const response = await axios.get(`http://localhost:3001/api/users`);
-        setUsers(response.data);
+      const response = await axios.get(`http://localhost:3001/api/users`);
+      setUsers(response.data);
     } catch (error) {
-        console.log(error);
+      console.error('Error fetching users:', error);
     }
-  };
+  }, []);
 
   //初期ロード
   useEffect(() => {
     fetchSeats();
-    fetchUser();
-  }, []);
+    fetchUsers();
+  }, [fetchSeats, fetchUsers]);
 
   //モーダルが閉じられた際、座席を再表示
   useEffect(() => {
     setModalCloseCallback(fetchSeats);
-  }, [setModalCloseCallback]);
+  }, [setModalCloseCallback, fetchSeats]);
 
   
   const handleSeatClick = (selectedSeat) => {
