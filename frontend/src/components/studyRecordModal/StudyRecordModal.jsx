@@ -10,6 +10,8 @@ import ErrorDialog from '../errorDialog/ErrorDialog';
 
 export default function StudyRecordModal({ seatId }) {
 	const { user } = useContext(AuthContext);
+	const { closeModal } = useContext(ModalContext);
+
 	const [studyContent, setStudyContent] = useState('');
 	const [isTimerRunning, setIsTimerRunning] = useState(false);
 	const [startTime, setStartTime] = useState(null);
@@ -17,7 +19,6 @@ export default function StudyRecordModal({ seatId }) {
 	const [openDialog, setOpenDialog] = useState(false);
 	const [openErrorDialog, setOpenErrorDialog] = useState(false);
 
-	const { closeModal } = useContext(ModalContext);
 	const timer = useTimer(isTimerRunning, startTime);
 
 	//着席した状態でモーダルを閉じ、再表示した場合は途中の結果を表示
