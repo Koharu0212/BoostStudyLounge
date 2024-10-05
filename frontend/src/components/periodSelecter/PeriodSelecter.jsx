@@ -17,7 +17,7 @@ export default function PeriodSelector({ handlePeriodChange, handleSubmit }) {
 			<form className="form" onSubmit={ handleInputChange }>
 				<div className="radioButtons">
 					<div className="radioButton">
-						<label><input type="radio" id="all" name="period" value="all"  onChange={handleChangeButton} />すべて</label>
+						<label><input type="radio" id="all" name="period" value="all" checked onChange={handleChangeButton} />すべて</label>
 					</div>
 					<div className="radioButton">
 						<label><input type="radio" id="1week" name="period" value="1week" onChange={handleChangeButton} />1週間</label>
