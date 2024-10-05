@@ -3,7 +3,7 @@ import { Box, TextField, Button, Typography } from '@mui/material';
 import axios from 'axios';
 import { AuthContext } from '../../state/AuthContext';
 import { ModalContext } from  '../../state/ModalContext';
-import { formatDate } from '../../utils/dateUtils';
+import { formatDatetime } from '../../utils/dateUtils';
 import { useTimer } from '../../hooks/useTimer';
 import StudyContentDialog  from '../studyContentDialog/StudyContentDialog';
 import ErrorDialog from '../errorDialog/ErrorDialog';
@@ -90,8 +90,8 @@ export default function StudyRecordModal({ seatId }) {
 			const studyTime = Math.floor((currentTime - startTime) / 1000);
 			await axios.post(`http://localhost:3001/api/records/`,{
 				userId: user[0].user_id,
-				startDate: formatDate(startTime),
-        		endDate: formatDate(currentTime),
+				startDate: formatDatetime(startTime),
+        		endDate: formatDatetime(currentTime),
 				measurementTime: studyTime,
 				contents: studyContent
 			});
