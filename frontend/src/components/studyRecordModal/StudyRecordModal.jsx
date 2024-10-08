@@ -10,6 +10,7 @@ import ErrorDialog from '../errorDialog/ErrorDialog';
 
 export default function StudyRecordModal({ seatId, studyContent, onContentChange }) {
 	const { user } = useContext(AuthContext);
+	const currentUser = user.userInfo;
 	const { closeModal } = useContext(ModalContext);
 
 	const [isTimerRunning, setIsTimerRunning] = useState(false);
@@ -25,7 +26,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 		const fetchSeatStatus = async () => {
 			try {
 				const response = await axios.get(`http://localhost:3001/api/seats/status/${seatId}`);
-				if (response.data.user_id === user[0].user_id && response.data.start_time) {
+				if (response.data.user_id === currentUser.user_id && response.data.start_time) {
 					setIsTimerRunning(true);
 					setStartTime(new Date(response.data.start_time));
 				}
@@ -45,7 +46,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 	const handleStartTimer = async () => {
 		try {
 			//すでに他の席に着席していないか確認
-			const response = await axios.get(`http://localhost:3001/api/seats/${user[0].user_id}`);
+			const response = await axios.get(`http://localhost:3001/api/seats/${currentUser.user_id}`);
 			if(response.data.length > 0){
 				setOpenErrorDialog(true);
 				return;
@@ -54,7 +55,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 			setStartTime(currentTime);
 			setIsTimerRunning(true);
 			await axios.put("http://localhost:3001/api/seats/occupy", {
-				userId: user[0].user_id,
+				userId: currentUser.user_id,
 				seatId: seatId
 			});
 		} catch (err) {
@@ -83,12 +84,12 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 	const finishStudy = async (currentTime) => {
 		try {
 			await axios.put("http://localhost:3001/api/seats/vacate", {
-				userId: user[0].user_id,
+				userId: currentUser.user_id,
 				seatId: seatId
 			});
 			const studyTime = Math.floor((currentTime - startTime) / 1000);
 			await axios.post(`http://localhost:3001/api/records/`,{
-				userId: user[0].user_id,
+				userId: currentUser.user_id,
 				startDate: formatDatetime(startTime),
         		endDate: formatDatetime(currentTime),
 				measurementTime: studyTime,

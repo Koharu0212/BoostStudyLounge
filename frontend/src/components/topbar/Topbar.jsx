@@ -7,7 +7,7 @@ import { AuthContext } from '../../state/AuthContext';
 
 export default function Topbar() {
 	const { user } = useContext(AuthContext);
-	const username = user[0].username;
+	const username = user.userInfo.username;
 	const logout = useLogout();
 
 	return (

@@ -11,7 +11,7 @@ import { AuthContext } from '../../state/AuthContext';
 export default function Room() {
   const { user } = useContext(AuthContext);
   const { openModal, setModalCloseCallback } = useContext(ModalContext);
-  const currentUserId = user[0].user_id; //ログイン中のuser id
+  const currentUser = user.userInfo; //ログイン中のユーザ情報
   const [seats, setSeats] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedSeat, setSelectedSeat] = useState(null);
@@ -51,8 +51,8 @@ export default function Room() {
   const handleSeatClick = (selectedSeat) => {
     const seatId = selectedSeat.seat_id;
     const isOccupied = selectedSeat.user_id !== null;
-    const isCurrentUser = selectedSeat.user_id === currentUserId;
-    const occupantName = users.find(user => user.user_id === selectedSeat.user_id)?.username;
+    const isCurrentUser = selectedSeat.user_id === currentUser.user_id;
+    const occupantName = users.find(user => currentUser.user_id === selectedSeat.user_id)?.username;
 
     setSelectedSeat({
       seatId,
@@ -72,7 +72,7 @@ export default function Room() {
           <div className="seatContainer">
             {seats.map((seat) => {
               const isOccupied = seat.user_id !== null;
-              const isMine = seat.user_id === currentUserId;
+              const isMine = seat.user_id === currentUser.user_id;
               const occupantName = users.find(user => user.user_id === seat.user_id)?.username;
 
               return (
