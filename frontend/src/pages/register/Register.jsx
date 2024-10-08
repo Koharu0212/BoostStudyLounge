@@ -8,17 +8,17 @@ export default function Register() {
     const email = useRef();
     const password = useRef();
     const passwordConfirmation = useRef();
-    const [error, setError] = useState("");
+    const [registerError, setRegisterError] = useState("");
 
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(""); // エラーメッセージをリセット
+        setRegisterError("");
 
         //パスワードと確認用パスワードが合っているかどうか確認
         if (password.current.value !== passwordConfirmation.current.value) {
-            setError("パスワードが一致しません");
+            setRegisterError("パスワードが一致しません");
             return;
         }
 
@@ -33,9 +33,9 @@ export default function Register() {
         } catch (err) {
 			console.log(err.response);
             if (err.response && err.response.data) {
-                setError(err.response.data.message || "登録に失敗しました");
+                setRegisterError(err.response.data.message || "登録に失敗しました");
             } else {
-                setError("登録中にエラーが発生しました");
+                setRegisterError("登録中にエラーが発生しました");
             }
         }
     };
@@ -45,7 +45,7 @@ export default function Register() {
             <div className="loginWrapper">
                 <div className="loginLogo">Boost Study Lounge</div>
                 <form className="loginBox" onSubmit={(e) => handleSubmit(e)}>
-                    {error && <div className="errorMessage">{error}</div>}
+                    {registerError && <div className="errorMessage">{registerError}</div>}
                     <input type="text" className="loginInput" placeholder="ユーザ名" required ref={username}/>
                     <input type="email" className="loginInput" placeholder="Eメール" required ref={email}/>
                     <input type="password" className="loginInput" placeholder="パスワード" required minLength={6} ref={password}/>
