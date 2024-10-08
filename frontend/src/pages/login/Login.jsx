@@ -7,7 +7,7 @@ import { AuthContext } from '../../state/AuthContext';
 export default function Login() {
     const email = useRef();
     const password = useRef();
-    const { isFetching, error, dispatch } = useContext(AuthContext);
+    const { dispatch, isFetching } = useContext(AuthContext);
     const [loginError, setLoginError] = useState("");
 
     const navigate = useNavigate();
@@ -24,16 +24,20 @@ export default function Login() {
                 dispatch
             );
         } catch (err) {
-            setLoginError("メールアドレスまたはパスワードが一致しません");
+            if (err.response) {
+                // サーバーからのレスポンスがある場合
+                if (err.response.status === 404) {
+                    setLoginError("メールアドレスが違います。");
+                } else if (err.response.status === 400) {
+                    setLoginError("パスワードが違います。");
+                } else {
+                    setLoginError("ログインに失敗しました。");
+                }
+            } else {
+                setLoginError("ネットワークエラーが発生しました。");
+            }
         }
     }
-
-    // エラーステートが変更されたときにログインエラーを設定
-    useEffect(() => {
-        if (error) {
-            setLoginError("メールアドレスまたはパスワードが一致しません");
-        }
-    }, [error]);
 
     return (
         <div className="login">
