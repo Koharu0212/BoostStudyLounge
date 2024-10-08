@@ -31,7 +31,6 @@ export default function Register() {
             await axios.post("http://localhost:3001/api/auth/register", user);
             navigate("/login");
         } catch (err) {
-			console.log(err.response);
             if (err.response && err.response.data) {
                 setRegisterError(err.response.data.message || "登録に失敗しました");
             } else {
