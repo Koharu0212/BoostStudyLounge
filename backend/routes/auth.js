@@ -1,31 +1,37 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const connection = require('../config/database');
 
 //ログイン
 router.post('/login', (req, res) => {
 	connection.query(
-	  'SELECT * FROM users where email = ?',
-	  [req.body.email],
-	  async (error, results) => {
-		if (error) {
-		  return res.status(500).json({ error: "クエリに失敗しました"});
+		'SELECT * FROM users where email = ?',
+		[req.body.email],
+		async (error, results) => {
+			if (error) {
+				return res.status(500).json({ error: "クエリに失敗しました"});
+			}
+	
+			if(results.length === 0) {
+				return res.status(404).json("ユーザが見つかりません");
+			}
+	
+			const validPassword = await bcrypt.compare(req.body.password, results[0].password);      
+			if(!validPassword) {
+				return res.status(400).json("パスワードが違います");
+			}
+		  
+			const token = jwt.sign(
+				{ user_id: results[0].user_id, username: results[0].username },
+				process.env.JWT_SECRET,
+				{ expiresIn: process.env.JWT_EXPIRE }
+			);
+	
+		  return res.status(200).json({ token, userInfo: { user_id: results[0].user_id, username: results[0].username } });
 		}
-  
-		//emailが一致しなかった場合
-		if(results.length === 0) {
-		  return res.status(404).json("ユーザが見つかりません");
-		}
-  
-		const vailedPassword = await bcrypt.compare(req.body.password, results[0].password);      
-		if(!vailedPassword) {
-		  return res.status(400).json("パスワードが違います");
-		}
-		
-		return res.status(200).json(results);
-	  }
-	)
+	  )
   })
 
   //ユーザ登録
