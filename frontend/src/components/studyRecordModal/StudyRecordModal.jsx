@@ -8,11 +8,10 @@ import { useTimer } from '../../hooks/useTimer';
 import StudyContentDialog  from '../studyContentDialog/StudyContentDialog';
 import ErrorDialog from '../errorDialog/ErrorDialog';
 
-export default function StudyRecordModal({ seatId }) {
+export default function StudyRecordModal({ seatId, studyContent, onContentChange }) {
 	const { user } = useContext(AuthContext);
 	const { closeModal } = useContext(ModalContext);
 
-	const [studyContent, setStudyContent] = useState('');
 	const [isTimerRunning, setIsTimerRunning] = useState(false);
 	const [startTime, setStartTime] = useState(null);
 	const [endTime, setEndTime] = useState(null);
@@ -39,8 +38,8 @@ export default function StudyRecordModal({ seatId }) {
 
 	//勉強内容を取得
 	const handleContentChange = (event) => {
-		setStudyContent(event.target.value);
-	};
+        onContentChange(event.target.value);
+    };
 
 	//着席
 	const handleStartTimer = async () => {

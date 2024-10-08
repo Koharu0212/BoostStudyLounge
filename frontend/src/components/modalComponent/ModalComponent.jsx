@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { ModalContext } from '../../state/ModalContext';
 import { Modal, Box, Typography, IconButton } from '@mui/material';
 import CloseIcon from "@mui/icons-material/Close";
@@ -18,10 +18,19 @@ const modalStyle = {
 
 export default function ModalComponent({ seatId, isCurrentUser, isOccupied, occupantName }) {
 	const { isModalOpen, closeModal } = useContext(ModalContext);
+	const [studyContent, setStudyContent] = useState('');
+
+	const handleContentChange = (newContent) => {
+        setStudyContent(newContent);
+    };
 
 	const renderModalContent = () => {
         if (isCurrentUser || !isOccupied) {
-            return <StudyRecordModal seatId={seatId}/>;
+            return <StudyRecordModal 
+						seatId={seatId}
+						studyContent={studyContent}
+						onContentChange={handleContentChange}
+					/>;
         } else if (isOccupied && !isCurrentUser) {
             return (
                 <Typography variant="h6" component="h2">
