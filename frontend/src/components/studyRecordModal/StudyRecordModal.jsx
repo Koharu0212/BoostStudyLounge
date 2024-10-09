@@ -6,7 +6,7 @@ import { ModalContext } from  '../../state/ModalContext';
 import { formatDatetime } from '../../utils/dateUtils';
 import { useTimer } from '../../hooks/useTimer';
 import StudyContentDialog  from '../studyContentDialog/StudyContentDialog';
-import ErrorDialog from '../errorDialog/ErrorDialog';
+import MessageDialog from '../messageDialog/MessageDialog';
 
 export default function StudyRecordModal({ seatId, studyContent, onContentChange }) {
 	const { user } = useContext(AuthContext);
@@ -35,7 +35,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 			}
 		};
 		fetchSeatStatus();
-	}, [seatId, user]);
+	}, [seatId, currentUser]);
 
 	//勉強内容を取得
 	const handleContentChange = (event) => {
@@ -161,7 +161,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 			onContentChange={handleContentChange}
 			onConfirm={handleConfirmDialog}
      	/>
-		<ErrorDialog
+		<MessageDialog
 			open={openErrorDialog}
 			onClose={handleCloseErrorDialog}
 			title={'座席選択エラー'}

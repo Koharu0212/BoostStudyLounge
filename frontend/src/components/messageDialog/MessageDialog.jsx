@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
 
-export default function ErrorDialog({ open, onClose, title, content }) {
+export default function MessagerDialog({ open, onClose, title, content }) {
   return (
 	<Dialog open={open} onClose={onClose}>
 		<DialogContent>
