@@ -52,7 +52,7 @@ export default function Room() {
     const seatId = selectedSeat.seat_id;
     const isOccupied = selectedSeat.user_id !== null;
     const isCurrentUser = selectedSeat.user_id === currentUser.user_id;
-    const occupantName = users.find(user => currentUser.user_id === selectedSeat.user_id)?.username;
+    const occupantName = users.find(user => user.user_id === selectedSeat.user_id)?.username;
 
     setSelectedSeat({
       seatId,
