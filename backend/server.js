@@ -4,10 +4,13 @@ const cors = require('cors');
 const app = express();
 const path = require('path');
 const port = 3001;
+const pool = require('./config/database');
 
-require("dotenv").config();
-
-require('./config/database');
+app.use(cors({
+  origin: ['http://localhost:3000'],
+  credentials: true,
+  optionsSuccessStatus: 200 
+}));
 
 // テンプレートエンジンとしてEJSを設定
 app.set('view engine', 'ejs');
@@ -21,12 +24,6 @@ app.use(express.json());
 //POSTパラメータの受け取りに必要
 app.use(express.urlencoded({extended: false}));
 
-app.use(cors({
-  origin: ['http://localhost:3000'],
-  credentials: true,
-  optionsSuccessStatus: 200 
-}));
-
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/seats', require('./routes/seats'));
@@ -36,7 +33,6 @@ app.use('/api/records', require('./routes/records'));
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
-
 
 app.get('/', (req, res) => {
   try {
