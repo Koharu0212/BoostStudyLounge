@@ -14,9 +14,7 @@ const pool = mysql.createPool({
   database: 'boost_study_lounge',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0,
   namedPlaceholders: true,
-  connectionLimit: 1,
 });
 
 module.exports = pool;
