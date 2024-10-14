@@ -3,11 +3,9 @@ const bcrypt = require('bcrypt');
 const cors = require('cors');
 const app = express();
 const path = require('path');
-const port = 3001;
-const pool = require('./config/database');
 
 app.use(cors({
-  origin: ['http://localhost:3000'],
+  origin: [process.env.CLIENT_URL],
   credentials: true,
   optionsSuccessStatus: 200 
 }));
@@ -31,12 +29,12 @@ app.use('/api/records', require('./routes/records'));
 
 // サーバを起動
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}/`);
+  console.log(`Server running at ${process.env.SERVER_URL}`);
 });
 
 app.get('/', (req, res) => {
   try {
-      res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
+      res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_URL)
       res.status(201).send('ok')
   } catch (error) {
       console.error(error)
