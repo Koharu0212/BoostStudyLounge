@@ -133,7 +133,7 @@ router.get('/:seatId', async (req, res) => {
 });
 
 //定期的に長時間着席しているユーザーをチェックし、自動で離席させる
-cron.schedule('*/5 * * * *', async () => {
+cron.schedule('*/1 * * * *', async () => {
 	console.log('自動離席処理を開始します');
 	let connection;
 	try {
@@ -167,7 +167,7 @@ async function autoVacateSeat(connection, currentTime, seatId, userId, startTime
 	  	const measurementTime = Math.min(Math.floor((currentTime - new Date(startTime)) / 1000), MAX_STUDY_TIME / 1000);
 	  	await connection.query(
 			'INSERT INTO study_records (user_id, start_date, end_date, measurement_time, contents) VALUES (?, ?, ?, ?, ?)',
-			[userId, startTime, currentTime, measurementTime, '着席時間が制限時間を超えたため、自動離席しました。']
+			[userId, startTime, currentTime, measurementTime, '着席時間が12時間を超えたため、自動離席しました。']
 	  	);
 		await connection.commit();
 		console.log(`userId${userId}の離席処理が完了しました`);
