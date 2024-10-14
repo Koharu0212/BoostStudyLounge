@@ -1,11 +1,28 @@
 import React from 'react';
 import "./PeriodSelecter.css";
 
+/**
+ * PeriodSelector コンポーネント
+ * 勉強履歴の表示期間を選択するためのラジオボタンと送信ボタンを提供する
+ * 
+ * @param {Object} props
+ * @param {Function} props.handlePeriodChange - 表示期間期間変更時のハンドラ関数
+ * @param {Function} props.handleSubmit - フォーム送信時のハンドラ関数
+ * @returns {JSX.Element} PeriodSelector コンポーネントの JSX
+ */
 export default function PeriodSelector({ handlePeriodChange, handleSubmit }) {
+	/**
+     * フォーム送信時の処理を行う関数
+     * @param {Event} e - フォーム送信イベント
+     */
 	const handleInputChange = (e) => {
         handleSubmit(e);
     };
 
+	/**
+     * ラジオボタン変更時の処理を行う関数
+     * @param {Event} e - ラジオボタン変更イベント
+     */
 	const handleChangeButton = (e) => {
 		handlePeriodChange(e);
 	}

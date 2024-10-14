@@ -3,6 +3,12 @@ import "./Register.css"
 import { useNavigate } from 'react-router-dom'
 import axios from "axios";
 
+/**
+ * Register ページ
+ * 登録フォームを提供するページ
+ * 
+ * @returns {JSX.Element} Register ページの JSX
+ */
 export default function Register() {
     const username = useRef();
     const email = useRef();
@@ -12,11 +18,15 @@ export default function Register() {
 
     const navigate = useNavigate();
 
+    /**
+     * フォーム送信時の処理を行う関数
+     * 
+     * @param {Event} e - フォーム送信イベント
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         setRegisterError("");
 
-        //パスワードと確認用パスワードが合っているかどうか確認
         if (password.current.value !== passwordConfirmation.current.value) {
             setRegisterError("パスワードが一致しません");
             return;
@@ -45,12 +55,43 @@ export default function Register() {
                 <div className="loginLogo">Boost Study Lounge</div>
                 <form className="loginBox" onSubmit={(e) => handleSubmit(e)}>
                     {registerError && <div className="errorMessage">{registerError}</div>}
-                    <input type="text" className="loginInput" placeholder="ユーザ名" required ref={username}/>
-                    <input type="email" className="loginInput" placeholder="Eメール" required ref={email}/>
-                    <input type="password" className="loginInput" placeholder="パスワード" required minLength={6} ref={password}/>
-                    <input type="password" className="loginInput" placeholder="確認用パスワード" required minLength={6} ref={passwordConfirmation}/>
+                    <input 
+                        type="text" 
+                        lassName="loginInput"
+                        placeholder="ユーザ名" 
+                        required 
+                        ref={username}
+                    />
+                    <input
+                        type="email" 
+                        className="loginInput" 
+                        placeholder="Eメール" 
+                        required 
+                        ref={email}
+                    />
+                    <input 
+                        type="password" 
+                        className="loginInput" 
+                        placeholder="パスワード" 
+                        required 
+                        minLength={6} 
+                        ref={password}
+                    />
+                    <input 
+                        type="password" 
+                        className="loginInput" 
+                        placeholder="確認用パスワード" 
+                        required 
+                        minLength={6} 
+                        ref={passwordConfirmation}
+                    />
                     <button className="loginButton">サインアップ</button>
-                    <button className="loginRegisterButton" onClick={() => navigate('/login')}>ログイン</button>
+                    <button 
+                        className="loginRegisterButton" 
+                        onClick={() => navigate('/login')}
+                    >
+                        ログイン
+                    </button>
                 </form>
             </div>
         </div>

@@ -8,15 +8,24 @@ import { ModalContext } from '../../state/ModalContext';
 import axios from 'axios';
 import { AuthContext } from '../../state/AuthContext';
 
+/**
+ * Room ページ
+ * 自習室の座席配置と状態を管理し、表示するページ
+ * @returns {JSX.Element} Room ページの JSX
+ */
 export default function Room() {
   const { user } = useContext(AuthContext);
   const { openModal, setModalCloseCallback } = useContext(ModalContext);
-  const currentUser = user.userInfo; //ログイン中のユーザ情報
+  
+  const currentUser = user.userInfo; //ログイン中のuserId, username
   const [seats, setSeats] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedSeat, setSelectedSeat] = useState(null);
 
-  //座席情報を取得
+   /**
+   * 座席情報をサーバーから取得する
+   * @returns {Promise<void>}
+   */
   const fetchSeats = useCallback(async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/seats`);
@@ -26,7 +35,10 @@ export default function Room() {
     }
   }, []);
 
-  //全てのユーザのuser_idの取得
+   /**
+   * ユーザー情報をサーバーから取得する
+   * @returns {Promise<void>}
+   */
   const fetchUsers = useCallback(async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
@@ -36,18 +48,21 @@ export default function Room() {
     }
   }, []);
 
-  //初期ロード
+  // コンポーネントのマウント時に座席とユーザー情報を取得
   useEffect(() => {
     fetchSeats();
     fetchUsers();
   }, [fetchSeats, fetchUsers]);
 
-  //モーダルが閉じられた際、座席を再表示
+  // モーダルが閉じられたとき、座席情報を再取得
   useEffect(() => {
     setModalCloseCallback(fetchSeats);
   }, [setModalCloseCallback, fetchSeats]);
 
-  
+   /**
+   * 座席がクリックされたときの処理
+   * @param {Object} selectedSeat - クリックされた座席の情報
+   */
   const handleSeatClick = (selectedSeat) => {
     const seatId = selectedSeat.seat_id;
     const isOccupied = selectedSeat.user_id !== null;

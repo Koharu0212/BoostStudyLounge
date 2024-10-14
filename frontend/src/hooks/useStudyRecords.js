@@ -1,12 +1,20 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export default function useStudyRecords(username) {
+/**
+ * useStudyRecords カスタムフック
+ * 指定されたユーザーの学習記録を取得し、フィルタリングする
+ * 
+ * @param {string} username - 学習記録を取得するユーザーの名前
+ * @returns {Object} 学習記録と関連する操作を含むオブジェクト
+ */
+export default function useStudyRecords (username) {
     const [records, setRecords] = useState([]);
     const [filteredRecords, setFilteredRecords] = useState([]);
     const [selectedPeriod, setSelectedPeriod] = useState('all');
     const [appliedPeriod, setAppliedPeriod] = useState('all');
 
+    // ユーザーの学習記録を取得
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -19,6 +27,7 @@ export default function useStudyRecords(username) {
         fetchUser();
     }, [username]);
 
+    // 選択された表示期間に基づいて勉強記録をフィルタリング
     useEffect(() => {
         const filterData = () => {
             const currentDate = new Date();
@@ -38,11 +47,19 @@ export default function useStudyRecords(username) {
         filterData();
     }, [records, appliedPeriod]);
 
+     /**
+     * 表示期間の変更を処理する関数
+     * @param {Event} e - 変更イベント
+     */
     const handlePeriodChange = (e) => {
         e.preventDefault();
         setSelectedPeriod(e.target.value);
     }
 
+     /**
+     * 選択された期間を適用する関数
+     * @param {Event} e - フォーム送信イベント
+     */
     const handleSubmit = (e) => {
         e.preventDefault();
         setAppliedPeriod(selectedPeriod);

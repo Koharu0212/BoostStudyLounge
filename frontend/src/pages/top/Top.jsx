@@ -2,6 +2,13 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import "./Top.css"
 
+/**
+ * Top ページ
+ * アプリケーションのトップページを表示するページ
+ * ログインと新規登録へのナビゲーションを提供する
+ * 
+ * @returns {JSX.Element} Top ページの JSX
+ */
 export default function Top() {
   const navigate = useNavigate();
 
@@ -15,8 +22,18 @@ export default function Top() {
             <div className="topMsg">オンライン自習室へようこそ</div>
           </div>
           <div className="topButton">
-            <button className="topLoginButton" onClick={() => navigate('/login')}>ログイン</button>
-            <button className="topRegisterButton" onClick={() => navigate('/register')}>新規登録</button>
+            <button 
+              className="topLoginButton" 
+              onClick={() => navigate('/login')}
+            >
+              ログイン
+            </button>
+            <button 
+              className="topRegisterButton" 
+              onClick={() => navigate('/register')}
+            >
+              新規登録
+            </button>
           </div>
         </div>
       </div>

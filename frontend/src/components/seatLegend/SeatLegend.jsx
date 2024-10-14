@@ -1,6 +1,12 @@
 import React from 'react'
 import './SeatLegend.css'
 
+/**
+ * SeatLegend コンポーネント
+ * 座席の状態を示すレジェンドを表現する
+ * 
+ * @returns {JSX.Element} SeatLegend コンポーネントの JSX
+ */
 export default function SeatLegend() {
   return (
 	<div className="seatLegendContainer">

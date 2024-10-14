@@ -2,6 +2,12 @@ import React from 'react'
 import "./Table.css"
 import { formatDate, formatTime, formatDuration } from '../../utils/dateUtils';
 
+/**
+ * Table コンポーネント
+ * MyPage内に表示される勉強履歴テーブル
+ * 
+ * @returns {JSX.Element} Table コンポーネントの JSX
+ */
 export default function Table({records}) {
   return (
     <>

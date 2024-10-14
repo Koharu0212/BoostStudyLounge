@@ -16,21 +16,42 @@ const modalStyle = {
     p: 4,
   };
 
+/**
+ * ModalComponent
+ * 座席の状態に応じて異なる内容を表示するモーダルコンポーネント
+ * 
+ * @param {Object} props
+ * @param {number} props.seatId - 座席ID
+ * @param {boolean} props.isCurrentUser - 現在のユーザーの座席かどうか
+ * @param {boolean} props.isOccupied - 座席が占有されているかどうか
+ * @param {string} props.occupantName - 座席を占有しているユーザーの名前
+ * @returns {JSX.Element} ModalComponent の JSX
+ */
 export default function ModalComponent({ seatId, isCurrentUser, isOccupied, occupantName }) {
 	const { isModalOpen, closeModal } = useContext(ModalContext);
 	const [studyContent, setStudyContent] = useState('');
 
+	/**
+     * 学習内容の変更を処理する関数
+     * @param {string} newContent - 新しい学習内容
+     */
 	const handleContentChange = (newContent) => {
         setStudyContent(newContent);
     };
 
+	 /**
+     * モーダルの内容をレンダリングする関数
+     * @returns {JSX.Element} モーダルの内容
+     */
 	const renderModalContent = () => {
         if (isCurrentUser || !isOccupied) {
-            return <StudyRecordModal 
-						seatId={seatId}
-						studyContent={studyContent}
-						onContentChange={handleContentChange}
-					/>;
+            return (
+				<StudyRecordModal 
+					seatId={seatId}
+					studyContent={studyContent}
+					onContentChange={handleContentChange}
+				/>
+			);
         } else if (isOccupied && !isCurrentUser) {
             return (
                 <Typography variant="h6" component="h2">

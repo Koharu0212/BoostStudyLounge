@@ -1,3 +1,12 @@
+/**
+ * 認証状態を管理するリデューサー
+ * 
+ * @param {Object} state - 現在の認証状態
+ * @param {Object} action - ディスパッチされたアクション
+ * @param {string} action.type - アクションのタイプ
+ * @param {*} [action.payload] - アクションに付随するデータ
+ * @returns {Object} 新しい認証状態
+ */
 const AuthReducer = (state, action) => {
 	switch(action.type) {
 		case "LOGIN_START":
@@ -31,7 +40,6 @@ const AuthReducer = (state, action) => {
 		default:
 			return state;
 	}
-	
 }
 
 export default AuthReducer;

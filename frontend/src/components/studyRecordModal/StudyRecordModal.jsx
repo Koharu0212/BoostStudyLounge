@@ -8,8 +8,19 @@ import { useTimer } from '../../hooks/useTimer';
 import StudyContentDialog  from '../studyContentDialog/StudyContentDialog';
 import MessageDialog from '../messageDialog/MessageDialog';
 
-const MAX_STUDY_TIME = 12 * 60 * 60 * 1000; //12h
+/** 最大勉強時間（12時間） */
+const MAX_STUDY_TIME = 12 * 60 * 60 * 1000;
 
+/**
+ * StudyRecordModal コンポーネント
+ * 勉強記録を行うモーダル
+ * 
+ * @param {Object} props
+ * @param {number} props.seatId - 座席ID
+ * @param {string} props.studyContent - 勉強内容
+ * @param {Function} props.onContentChange - 勉強内容変更時のコールバック関数
+ * @returns {JSX.Element} StudyRecordModal コンポーネントの JSX
+ */
 export default function StudyRecordModal({ seatId, studyContent, onContentChange }) {
 	const { user } = useContext(AuthContext);
 	const currentUser = user.userInfo;
@@ -21,9 +32,14 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 	const [openDialog, setOpenDialog] = useState(false);
 	const [openErrorDialog, setOpenErrorDialog] = useState(false);
 	const [openAutoVacateDialog, setOpenAutoVacateDialog] = useState(false);
-
+	
 	const timer = useTimer(isTimerRunning, startTime);
 
+	/**
+     * 座席を開放する
+     * @param {Date} currentTime - 計測が終了した時の時刻
+     * @param {boolean} isAutoVacate - 自動退席かどうか
+     */
 	const handleVacate = useCallback(async (currentTime, isAutoVacate) => {
 		setIsTimerRunning(false);
 		if (isAutoVacate) {
@@ -47,6 +63,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 		}
 	}, [closeModal, currentUser.user_id, seatId, startTime, studyContent]);
 
+	// 座席状態の初期取得
 	useEffect(() => {
 		const fetchSeatStatus = async () => {
 			try {
@@ -62,6 +79,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 		fetchSeatStatus();
 	}, [seatId, currentUser]);
 
+	// 自動退席タイマーの設定
 	useEffect(() => {
 		let autoVacateTimer;
 		if (isTimerRunning) {
@@ -76,10 +94,17 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 		};
 	}, [isTimerRunning, handleVacate]);
 
+	 /**
+     * 勉強内容の変更を処理する関数
+     * @param {Event} event - 入力イベント
+     */
 	const handleContentChange = (event) => {
         onContentChange(event.target.value);
     };
 
+	/**
+     * 計測を開始する関数
+     */
 	const handleStartTimer = async () => {
 		try {
 			const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/seats/user/${currentUser.user_id}`);
@@ -99,6 +124,9 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 		}
 	};
 
+	 /**
+     * 計測を停止する関数
+     */
 	const handleStopTimer = async () => {
 		const currentTime = new Date();
 		setIsTimerRunning(false);
@@ -115,19 +143,31 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 		}
  	};
 
+	 /**
+     * 勉強内容を入力せずに終了しようとした際に開かれるダイアログの関数
+     */
 	const handleCloseDialog = () => {
 		setOpenDialog(false);
 	};
 
+	 /**
+     * 着席状態かつ他の席に座ろうとした際に開かれるダイアログの関数
+     */
 	const handleCloseErrorDialog = () => {
 		setOpenErrorDialog(false);
 	}
 
+	 /**
+     * 自動離席処理が行われたことを示すダイアログの関数
+     */
 	const handleCloseAutoVacateDialog = () => {
 		setOpenAutoVacateDialog(false);
 		closeModal();
 	}
  
+	/**
+     * 勉強内容の入力漏れを処理するダイアログの確認ボタンを処理する関数
+     */
 	const handleConfirmDialog = async () => {
 		if (studyContent.trim()) {
 			setOpenDialog(false);

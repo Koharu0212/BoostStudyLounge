@@ -5,6 +5,13 @@ import { Link } from 'react-router-dom';
 import useLogout from '../../hooks/useLogout';
 import { AuthContext } from '../../state/AuthContext';
 
+/**
+ * Topbar コンポーネント
+ * アプリケーションの上部に表示されるナビゲーションバー
+ * Room ページ、MyPage ページ、ログアウトへのリンクを提供する
+ * 
+ * @returns {JSX.Element} Topbar コンポーネントの JSX
+ */
 export default function Topbar() {
 	const { user } = useContext(AuthContext);
 	const username = user.userInfo.username;

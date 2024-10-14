@@ -4,6 +4,12 @@ import { useNavigate } from 'react-router-dom'
 import { loginCall } from '../../actionCalls';
 import { AuthContext } from '../../state/AuthContext';
 
+/**
+ * Login ページ
+ * ログインフォームを提供するページ
+ * 
+ * @returns {JSX.Element} Login ページの JSX
+ */
 export default function Login() {
     const email = useRef();
     const password = useRef();
@@ -12,9 +18,14 @@ export default function Login() {
 
     const navigate = useNavigate();
 
+     /**
+     * フォーム送信時の処理を行う関数
+     * 
+     * @param {Event} e - フォーム送信イベント
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoginError(""); // エラーメッセージをリセット
+        setLoginError("");
         try {
             await loginCall(
                 {
@@ -25,7 +36,6 @@ export default function Login() {
             );
         } catch (err) {
             if (err.response) {
-                // サーバーからのレスポンスがある場合
                 if (err.response.status === 404) {
                     setLoginError("メールアドレスが違います。");
                 } else if (err.response.status === 400) {
