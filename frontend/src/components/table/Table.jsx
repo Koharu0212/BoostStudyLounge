@@ -22,7 +22,7 @@ export default function Table({records}) {
             <td>{formatTime(record.start_date)}</td>
             <td>{formatTime(record.end_date)}</td>
             <td>{formatDuration(record.measurement_time)}</td>
-            <td>{record.contents}</td>
+            <td>{record.content}</td>
           </tr>
           ))}
         </tbody>

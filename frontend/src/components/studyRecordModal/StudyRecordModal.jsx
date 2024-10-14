@@ -33,16 +33,11 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 			await axios.put(`${process.env.REACT_APP_API_URL}/api/seats/${seatId}/vacate`, {
 				userId: currentUser.user_id,
 			});
-			const studyTime = Math.floor((currentTime - startTime) / 1000);
-			const content = isAutoVacate
-				? '着席時間が制限時間を超えたため、自動離席しました。'
-				: studyContent;
 			await axios.post(`${process.env.REACT_APP_API_URL}/api/records/`,{
 				userId: currentUser.user_id,
 				startDate: formatDatetime(startTime),
         		endDate: formatDatetime(currentTime),
-				measurementTime: studyTime,
-				contents: content
+				content: isAutoVacate ? '着席時間が制限時間を超えたため、自動離席しました。': studyContent
 			});
 			if (!isAutoVacate) {
 				closeModal();
@@ -55,7 +50,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 	useEffect(() => {
 		const fetchSeatStatus = async () => {
 			try {
-				const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/seats/status/${seatId}`);
+				const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/seats/${seatId}`);
 				if (response.data.user_id === currentUser.user_id && response.data.start_time) {
 					setIsTimerRunning(true);
 					setStartTime(new Date(response.data.start_time));
