@@ -28,13 +28,14 @@ router.get('/user/:username', async (req, res) => {
 
   //勉強時間・内容を記録
 router.post('/', async (req, res) => {
-	const { userId, startDate, endDate, measurementTime, contents } = req.body;
+	const { userId, startDate, endDate, content } = req.body;
+	const measurementTime = Math.floor((new Date(endDate) - new Date(startDate)) / 1000);
 	let connection;
 	try {
 		connection = await pool.getConnection();
 		await connection.query(
-			'INSERT INTO study_records (user_id, start_date, end_date, measurement_time, contents) VALUES (?, ?, ?, ?, ?)', 
-			[userId, startDate, endDate, measurementTime, contents]
+			'INSERT INTO study_records (user_id, start_date, end_date, measurement_time, content) VALUES (?, ?, ?, ?, ?)', 
+			[userId, startDate, endDate, measurementTime, content]
 		);
 		return res.status(200).json();
 	} catch (error) {
