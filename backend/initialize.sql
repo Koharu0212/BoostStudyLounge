@@ -1,4 +1,5 @@
 CREATE DATABASE boost_study_lounge;
+use boost_study_lounge;
 CREATE TABLE users (
   user_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   username VARCHAR(20) UNIQUE NOT NULL,
@@ -12,7 +13,7 @@ CREATE TABLE study_records (
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
     measurement_time INT NOT NULL,
-    contents VARCHAR(255) NOT NULL,
+    content VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
