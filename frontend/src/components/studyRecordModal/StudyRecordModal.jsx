@@ -37,7 +37,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 				userId: currentUser.user_id,
 				startDate: formatDatetime(startTime),
         		endDate: formatDatetime(currentTime),
-				content: isAutoVacate ? '着席時間が制限時間を超えたため、自動離席しました。': studyContent
+				content: isAutoVacate ? '着席時間が12時間を超えたため、自動離席しました。': studyContent
 			});
 			if (!isAutoVacate) {
 				closeModal();
