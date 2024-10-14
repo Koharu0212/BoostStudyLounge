@@ -96,8 +96,6 @@ router.put('/:seatId/vacate', async (req, res) => {
 		if (rows[0].user_id !== userId) {
 			return res.status(400).json({ error: 'この席に指定したユーザが着席していません' });
 		}
-
-		//席の開放
 		await connection.query('UPDATE seats SET user_id = NULL, start_time = NULL WHERE seat_id = ?', [seatId]);
 		await connection.commit();
 		res.status(200).json({ message: '離席に成功しました' });
@@ -135,7 +133,7 @@ router.get('/:seatId', async (req, res) => {
 });
 
 //定期的に長時間着席しているユーザーをチェックし、自動で離席させる
-cron.schedule('*/1 * * * *', async () => {
+cron.schedule('*/5 * * * *', async () => {
 	console.log('自動離席処理を開始します');
 	let connection;
 	try {
