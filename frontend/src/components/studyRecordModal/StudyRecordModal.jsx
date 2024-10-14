@@ -30,7 +30,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 			setOpenAutoVacateDialog(true);
 		}
 		try {
-			await axios.put("http://localhost:3001/api/seats/vacate", {
+			await axios.put(`${process.env.REACT_APP_API_URL}/api/seats/vacate`, {
 				userId: currentUser.user_id,
 				seatId: seatId
 			});
@@ -38,7 +38,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 			const content = isAutoVacate
 				? '着席時間が制限時間を超えたため、自動離席しました。'
 				: studyContent;
-			await axios.post(`http://localhost:3001/api/records/`,{
+			await axios.post(`${process.env.REACT_APP_API_URL}/api/records/`,{
 				userId: currentUser.user_id,
 				startDate: formatDatetime(startTime),
         		endDate: formatDatetime(currentTime),
@@ -56,7 +56,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 	useEffect(() => {
 		const fetchSeatStatus = async () => {
 			try {
-				const response = await axios.get(`http://localhost:3001/api/seats/status/${seatId}`);
+				const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/seats/status/${seatId}`);
 				if (response.data.user_id === currentUser.user_id && response.data.start_time) {
 					setIsTimerRunning(true);
 					setStartTime(new Date(response.data.start_time));
@@ -88,7 +88,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 
 	const handleStartTimer = async () => {
 		try {
-			const response = await axios.get(`http://localhost:3001/api/seats/${currentUser.user_id}`);
+			const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/seats/${currentUser.user_id}`);
 			if(response.data.length > 0){
 				setOpenErrorDialog(true);
 				return;
@@ -96,7 +96,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 			const currentTime = new Date();
 			setStartTime(currentTime);
 			setIsTimerRunning(true);
-			await axios.put("http://localhost:3001/api/seats/occupy", {
+			await axios.put(`${process.env.REACT_APP_API_URL}/api/seats/occupy`, {
 				userId: currentUser.user_id,
 				seatId: seatId
 			});
