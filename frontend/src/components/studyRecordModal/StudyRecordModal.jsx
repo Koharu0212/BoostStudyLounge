@@ -30,9 +30,8 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 			setOpenAutoVacateDialog(true);
 		}
 		try {
-			await axios.put(`${process.env.REACT_APP_API_URL}/api/seats/vacate`, {
+			await axios.put(`${process.env.REACT_APP_API_URL}/api/seats/${seatId}/vacate`, {
 				userId: currentUser.user_id,
-				seatId: seatId
 			});
 			const studyTime = Math.floor((currentTime - startTime) / 1000);
 			const content = isAutoVacate
@@ -88,7 +87,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 
 	const handleStartTimer = async () => {
 		try {
-			const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/seats/${currentUser.user_id}`);
+			const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/seats/user/${currentUser.user_id}`);
 			if(response.data.length > 0){
 				setOpenErrorDialog(true);
 				return;
@@ -96,9 +95,8 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 			const currentTime = new Date();
 			setStartTime(currentTime);
 			setIsTimerRunning(true);
-			await axios.put(`${process.env.REACT_APP_API_URL}/api/seats/occupy`, {
+			await axios.put(`${process.env.REACT_APP_API_URL}/api/seats/${seatId}/occupy`, {
 				userId: currentUser.user_id,
-				seatId: seatId
 			});
 		} catch (err) {
 			console.error("着席エラー:", err);

@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require('../config/database');
 
 //勉強記録を取得
-router.get('/:username', async (req, res) => {
+router.get('/user/:username', async (req, res) => {
 	const username = req.params.username;
 	let connection;
 	//usernameを使用してuser_idを取得後、user_idを使用して勉強記録を取得

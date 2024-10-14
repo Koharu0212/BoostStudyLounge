@@ -10,7 +10,7 @@ export default function useStudyRecords(username) {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/records/${username}`);
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/records/user/${username}`);
                 setRecords(response.data);
             } catch (error) {
                 console.log(error);

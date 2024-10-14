@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
   });
 
   //ユーザが着席している席を取得
-  router.get('/:userId', async (req, res) => {
+  router.get('/user/:userId', async (req, res) => {
 	let connection;
 	try {
 		connection = await pool.getConnection();
@@ -38,8 +38,9 @@ router.get('/', async (req, res) => {
   })
 
   //着席
-  router.put('/occupy', async (req, res) => {
-	const { userId, seatId } = req.body;
+  router.put('/:seatId/occupy', async (req, res) => {
+	const { userId } = req.body;
+	const { seatId } = req.params;
 	let connection;
 	try {
 		connection = await pool.getConnection();
@@ -81,8 +82,9 @@ router.get('/', async (req, res) => {
 });
 
 //離席
-router.put('/vacate', async (req, res) => {
-	const { userId, seatId } = req.body;
+router.put('/:seatId/vacate', async (req, res) => {
+	const { userId } = req.body;
+	const { seatId } = req.params;
 	let connection;
 	try {
 		connection = await pool.getConnection();
@@ -111,7 +113,7 @@ router.put('/vacate', async (req, res) => {
 	}
 });
 
-router.get('/status/:seatId', async (req, res) => {
+router.get('/:seatId', async (req, res) => {
 	const seatId = req.params.seatId;
 	let connection;
 	try {
