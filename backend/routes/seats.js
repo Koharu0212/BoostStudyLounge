@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/database');
 const cron = require('node-cron');
-const MAX_STUDY_TIME = 12 * 60 * 60 * 1000; 
+const MAX_STUDY_TIME = 12 * 60 * 60 * 1000; //12h
 
 //座席情報を取得
 router.get('/', async (req, res) => {
@@ -87,7 +87,6 @@ router.put('/vacate', async (req, res) => {
 	try {
 		connection = await pool.getConnection();
    		await connection.beginTransaction();
-		//指定された席にユーザが座っているか確認
 		const [rows] = await connection.query('SELECT user_id FROM seats WHERE seat_id = ? FOR UPDATE', [seatId]);
 		if (rows.length === 0) {
 			return res.status(404).json({ error: '指定された席が見つかりません' });
@@ -133,61 +132,55 @@ router.get('/status/:seatId', async (req, res) => {
 	}
 });
 
-// 定期的に長時間着席しているユーザーをチェックし、自動で離席させる
-cron.schedule('*/5 * * * *', async () => {
+//定期的に長時間着席しているユーザーをチェックし、自動で離席させる
+cron.schedule('*/1 * * * *', async () => {
 	console.log('自動離席処理を開始します');
 	let connection;
 	try {
-	  connection = await pool.getConnection();
-	  const [occupiedSeat] = await connection.query(
-		'SELECT seat_id, user_id, start_time FROM seats WHERE user_id IS NOT NULL'
-	  );
-	  for (const seat of occupiedSeat) {
-		const elapsedTime = new Date() - new Date(seat.start_time);
-		if (elapsedTime >= MAX_STUDY_TIME) {
-			console.log(`離席対象発見：userId=${seat.user_id}`);
-		  await autoVacateSeat(seat.seat_id, seat.user_id, seat.start_time);
-		}
-	  }
-	  console.log('自動離席処理を終了します');
+		connection = await pool.getConnection();
+		const [occupiedSeat] = await connection.query(
+			'SELECT seat_id, user_id, start_time FROM seats WHERE user_id IS NOT NULL'
+	  	);
+		for (const seat of occupiedSeat) {
+			const currentTime = new Date();
+			const elapsedTime = new Date() - new Date(seat.start_time);
+			if (elapsedTime >= MAX_STUDY_TIME) {
+				console.log(`離席対象発見：userId=${seat.user_id}`);
+				await autoVacateSeat(connection, currentTime, seat.seat_id, seat.user_id, seat.start_time);
+			}
+	  	}
+		console.log('自動離席処理を終了します');
 	} catch (error) {
-	  console.error('Error in cron job:', error);
+		console.error('Error in cron job:', error);
 	} finally {
 	  if (connection) {
 		connection.release();
 	  }
 	}
-  });
+});
 
-  async function autoVacateSeat(seatId, userId, startTime) {
-	let connection;
+async function autoVacateSeat(connection, currentTime, seatId, userId, startTime) {
 	try {
-	  connection = await pool.getConnection();
-	  await connection.beginTransaction();
-		console.log('離席処理開始');
-	  await connection.query('UPDATE seats SET user_id = NULL, start_time = NULL WHERE seat_id = ? FOR UPDATE', [seatId]);
-		console.log('離席処理完了');
-	  const endTime = new Date();
-	  const measurementTime = Math.min(Math.floor((endTime - new Date(startTime)) / 1000), MAX_STUDY_TIME / 1000);
-		console.log('離席対象ユーザの勉強記録を開始');
-	  await connection.query(
-		'INSERT INTO study_records (user_id, start_date, end_date, measurement_time, contents) VALUES (?, ?, ?, ?, ?)',
-		[userId, startTime, endTime, measurementTime, '着席時間が12時間を超えたため、自動離席しました。']
-	  );
-	  console.log('記録完了');
-  
-	  await connection.commit();
-	  console.log(`userId${userId}の離席処理が完了しました`);
+		connection = await pool.getConnection();
+		await connection.beginTransaction();
+		await connection.query('UPDATE seats SET user_id = NULL, start_time = NULL WHERE seat_id = ?', [seatId]);
+	  	const measurementTime = Math.min(Math.floor((currentTime - new Date(startTime)) / 1000), MAX_STUDY_TIME / 1000);
+	  	await connection.query(
+			'INSERT INTO study_records (user_id, start_date, end_date, measurement_time, contents) VALUES (?, ?, ?, ?, ?)',
+			[userId, startTime, currentTime, measurementTime, '着席時間が制限時間を超えたため、自動離席しました。']
+	  	);
+		await connection.commit();
+		console.log(`userId${userId}の離席処理が完了しました`);
 	} catch (error) {
-	  if (connection) {
-		await connection.rollback();
-	  }
-	  console.error('Error in autoVacateSeat:', error);
+		if (connection) {
+			await connection.rollback();
+		}
+		console.error('Error in autoVacateSeat:', error);
 	} finally {
-	  if (connection) {
-		connection.release();
-	  }
+		if (connection) {
+			connection.release();
+		}
 	}
-  }
+}
 
 module.exports = router;

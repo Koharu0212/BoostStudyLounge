@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { Box, TextField, Button, Typography } from '@mui/material';
 import axios from 'axios';
 import { AuthContext } from '../../state/AuthContext';
@@ -7,6 +7,8 @@ import { formatDatetime } from '../../utils/dateUtils';
 import { useTimer } from '../../hooks/useTimer';
 import StudyContentDialog  from '../studyContentDialog/StudyContentDialog';
 import MessageDialog from '../messageDialog/MessageDialog';
+
+const MAX_STUDY_TIME = 12 * 60 * 60 * 1000; //12h
 
 export default function StudyRecordModal({ seatId, studyContent, onContentChange }) {
 	const { user } = useContext(AuthContext);
@@ -18,10 +20,39 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 	const [endTime, setEndTime] = useState(null);
 	const [openDialog, setOpenDialog] = useState(false);
 	const [openErrorDialog, setOpenErrorDialog] = useState(false);
+	const [openAutoVacateDialog, setOpenAutoVacateDialog] = useState(false);
 
 	const timer = useTimer(isTimerRunning, startTime);
 
-	//着席した状態でモーダルを閉じ、再表示した場合は途中の結果を表示
+	const handleVacate = useCallback(async (currentTime, isAutoVacate) => {
+		setIsTimerRunning(false);
+		if (isAutoVacate) {
+			setOpenAutoVacateDialog(true);
+		}
+		try {
+			await axios.put("http://localhost:3001/api/seats/vacate", {
+				userId: currentUser.user_id,
+				seatId: seatId
+			});
+			const studyTime = Math.floor((currentTime - startTime) / 1000);
+			const content = isAutoVacate
+				? '着席時間が制限時間を超えたため、自動離席しました。'
+				: studyContent;
+			await axios.post(`http://localhost:3001/api/records/`,{
+				userId: currentUser.user_id,
+				startDate: formatDatetime(startTime),
+        		endDate: formatDatetime(currentTime),
+				measurementTime: studyTime,
+				contents: content
+			});
+			if (!isAutoVacate) {
+				closeModal();
+			}
+		} catch (err) {
+			console.error(isAutoVacate ? "自動離席エラー:" : "離席エラー:", err);
+		}
+	}, [closeModal, currentUser.user_id, seatId, startTime, studyContent]);
+
 	useEffect(() => {
 		const fetchSeatStatus = async () => {
 			try {
@@ -37,15 +68,26 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 		fetchSeatStatus();
 	}, [seatId, currentUser]);
 
-	//勉強内容を取得
+	useEffect(() => {
+		let autoVacateTimer;
+		if (isTimerRunning) {
+			autoVacateTimer = setTimeout(() => {
+				handleVacate(new Date(), true);
+			}, MAX_STUDY_TIME);
+		}
+		return () => {
+			if (autoVacateTimer) {
+				clearTimeout(autoVacateTimer);
+			}
+		};
+	}, [isTimerRunning, handleVacate]);
+
 	const handleContentChange = (event) => {
         onContentChange(event.target.value);
     };
 
-	//着席
 	const handleStartTimer = async () => {
 		try {
-			//すでに他の席に着席していないか確認
 			const response = await axios.get(`http://localhost:3001/api/seats/${currentUser.user_id}`);
 			if(response.data.length > 0){
 				setOpenErrorDialog(true);
@@ -64,7 +106,6 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 		}
 	};
 
-	//離席
 	const handleStopTimer = async () => {
 		const currentTime = new Date();
 		setIsTimerRunning(false);
@@ -73,7 +114,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 			setOpenDialog(true);
 		} else {
 			try {
-				await finishStudy(currentTime); //離席処理と記録
+				await handleVacate(currentTime, false);
 			} catch (err) {
 				console.error("離席エラー:", err);
 				setIsTimerRunning(true);
@@ -81,26 +122,6 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 		}
  	};
 
-	const finishStudy = async (currentTime) => {
-		try {
-			await axios.put("http://localhost:3001/api/seats/vacate", {
-				userId: currentUser.user_id,
-				seatId: seatId
-			});
-			const studyTime = Math.floor((currentTime - startTime) / 1000);
-			await axios.post(`http://localhost:3001/api/records/`,{
-				userId: currentUser.user_id,
-				startDate: formatDatetime(startTime),
-        		endDate: formatDatetime(currentTime),
-				measurementTime: studyTime,
-				contents: studyContent
-			});
-			closeModal();
-		} catch (err) {
-			console.error("離席エラー:", err);
-		}
-	};
-	
 	const handleCloseDialog = () => {
 		setOpenDialog(false);
 	};
@@ -108,12 +129,17 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 	const handleCloseErrorDialog = () => {
 		setOpenErrorDialog(false);
 	}
+
+	const handleCloseAutoVacateDialog = () => {
+		setOpenAutoVacateDialog(false);
+		closeModal();
+	}
  
 	const handleConfirmDialog = async () => {
 		if (studyContent.trim()) {
 			setOpenDialog(false);
 			try {
-				await finishStudy(endTime);
+				await handleVacate(endTime, false);
 			} catch (err) {
 				console.error("離席エラー:", err);
 			}
@@ -121,6 +147,7 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 			setOpenDialog(true);
 		}
 	};
+
 
 	return (
 		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -166,6 +193,12 @@ export default function StudyRecordModal({ seatId, studyContent, onContentChange
 			onClose={handleCloseErrorDialog}
 			title={'座席選択エラー'}
 			content={'すでに他の席に着席しているため、着席することができません。あなたが着席している席を選択してください。'}
+		/>
+		<MessageDialog
+			open={openAutoVacateDialog}
+			onClose={handleCloseAutoVacateDialog}
+			title={'自動離席'}
+			content={'着席時間が制限時間を超えたため、自動で離席しました。'}
 		/>
 		</Box>
 	);
