@@ -4,7 +4,15 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const pool = require('../config/database');
 
-// ログイン
+/**
+ * ユーザログイン
+ * @route POST /api/auth/login
+ * @param {string} req.body.email - ユーザのメールアドレス
+ * @param {string} req.body.password - ユーザのパスワード
+ * @returns {object} 200 - トークン、有効期限、ユーザ情報を含むオブジェクト
+ * @returns {Error}  401 - 認証エラー
+ * @returns {Error}  500 - サーバエラー
+ */
 router.post('/login', async (req, res) => {
     let connection;
     try {
@@ -33,7 +41,17 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// ユーザ登録
+/**
+ * ユーザ登録
+ * @route POST /api/auth/register
+ * @param {string} req.body.username - ユーザ名
+ * @param {string} req.body.email - ユーザのメールアドレス
+ * @param {string} req.body.password - ユーザのパスワード
+ * @returns {object} 201 - 登録成功メッセージ
+ * @returns {Error}  400 - バリデーションエラー
+ * @returns {Error}  409 - 既存ユーザエラー
+ * @returns {Error}  500 - サーバエラー
+ */
 router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
     let connection;

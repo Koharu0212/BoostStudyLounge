@@ -2,9 +2,16 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/database');
 const cron = require('node-cron');
-const MAX_STUDY_TIME = 12 * 60 * 60 * 1000; //12h
 
-//座席情報を取得
+/** 最大勉強時間（12時間） */
+const MAX_STUDY_TIME = 12 * 60 * 60 * 1000;
+
+/**
+ * 全ての座席情報を取得
+ * @route GET /api/seats
+ * @returns {Array} 200 - 座席情報の配列
+ * @returns {Error} 500 - サーバエラー
+ */
 router.get('/', async (req, res) => {
 	let connection;
 	try {
@@ -20,7 +27,13 @@ router.get('/', async (req, res) => {
 	}
   });
 
-  //ユーザが着席している席を取得
+  /**
+ * 特定のユーザーが着席している席を取得
+ * @route GET /api/seats/user/:userId
+ * @param {string} req.params.userId - ユーザID
+ * @returns {Array} 200 - 着席している席のID
+ * @returns {Error} 500 - サーバエラー
+ */
   router.get('/user/:userId', async (req, res) => {
 	let connection;
 	try {
@@ -37,7 +50,16 @@ router.get('/', async (req, res) => {
 	}
   })
 
-  //着席
+  /**
+ * 特定の席に着席
+ * @route PUT /api/seats/:seatId/occupy
+ * @param {string} req.params.seatId - 座席ID
+ * @param {string} req.body.userId - ユーザID
+ * @returns {Object} 200 - 成功メッセージ
+ * @returns {Error} 400 - バリデーションエラー
+ * @returns {Error} 404 - 座席が見つからない
+ * @returns {Error} 500 - サーバエラー
+ */
   router.put('/:seatId/occupy', async (req, res) => {
 	const { userId } = req.body;
 	const { seatId } = req.params;
@@ -81,7 +103,16 @@ router.get('/', async (req, res) => {
 	}
 });
 
-//離席
+/**
+ * 特定の席から離席
+ * @route PUT /api/seats/:seatId/vacate
+ * @param {string} req.params.seatId - 座席ID
+ * @param {string} req.body.userId - ユーザID
+ * @returns {Object} 200 - 成功メッセージ
+ * @returns {Error} 400 - バリデーションエラー
+ * @returns {Error} 404 - 座席が見つからない
+ * @returns {Error} 500 - サーバエラー
+ */
 router.put('/:seatId/vacate', async (req, res) => {
 	const { userId } = req.body;
 	const { seatId } = req.params;
@@ -111,6 +142,14 @@ router.put('/:seatId/vacate', async (req, res) => {
 	}
 });
 
+/**
+ * 特定の席の情報を取得
+ * @route GET /api/seats/:seatId
+ * @param {string} req.params.seatId - 座席ID
+ * @returns {Object} 200 - 座席情報
+ * @returns {Error} 404 - 座席が見つからない
+ * @returns {Error} 500 - サーバエラー
+ */
 router.get('/:seatId', async (req, res) => {
 	const seatId = req.params.seatId;
 	let connection;
@@ -132,7 +171,9 @@ router.get('/:seatId', async (req, res) => {
 	}
 });
 
-//定期的に長時間着席しているユーザーをチェックし、自動で離席させる
+/**
+ * 定期的に12時間以上着席しているユーザをチェックし、自動で離席させる
+ */
 cron.schedule('*/1 * * * *', async () => {
 	console.log('自動離席処理を開始します');
 	let connection;
@@ -159,6 +200,14 @@ cron.schedule('*/1 * * * *', async () => {
 	}
 });
 
+/**
+ * 自動離席処理を行う関数
+ * @param {Object} connection - データベース接続オブジェクト
+ * @param {Date} currentTime - ユーザに対して自動離席処理が開始された現在時刻
+ * @param {string} seatId - 座席ID
+ * @param {string} userId - ユーザID
+ * @param {Date} startTime - 着席開始時間
+ */
 async function autoVacateSeat(connection, currentTime, seatId, userId, startTime) {
 	try {
 		connection = await pool.getConnection();
