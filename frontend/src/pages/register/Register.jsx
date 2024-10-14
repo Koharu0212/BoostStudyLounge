@@ -28,7 +28,7 @@ export default function Register() {
                 email: email.current.value,
                 password: password.current.value,
             };
-            await axios.post("http://localhost:3001/api/auth/register", user);
+            await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/register`, user);
             navigate("/login");
         } catch (err) {
             if (err.response && err.response.data) {

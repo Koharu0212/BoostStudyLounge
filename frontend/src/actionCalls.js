@@ -3,7 +3,7 @@ import axios from "axios";
 export const loginCall = async (user, dispatch) => {
 	dispatch({ type: "LOGIN_START" });
 	try {
-		const response = await axios.post("http://localhost:3001/api/auth/login", user);
+		const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, user);
 		dispatch({ type: "LOGIN_SUCCESS", payload: response.data });
 		return response.data;
 	} catch(err) {

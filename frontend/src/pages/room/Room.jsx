@@ -19,7 +19,7 @@ export default function Room() {
   //座席情報を取得
   const fetchSeats = useCallback(async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/api/seats`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/seats`);
       setSeats(response.data);
     } catch (error) {
       console.error('Error fetching seats:', error);
@@ -29,7 +29,7 @@ export default function Room() {
   //全てのユーザのuser_idの取得
   const fetchUsers = useCallback(async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/api/users`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
