@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../state/AuthContext';
-import { logoutCall } from '../actionCalls';
+import { logoutCall } from '../services/actionCalls';
 
 /**
  * useLogout カスタムフック
