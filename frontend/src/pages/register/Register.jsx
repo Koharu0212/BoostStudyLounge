@@ -57,7 +57,7 @@ export default function Register() {
                     {registerError && <div className="errorMessage">{registerError}</div>}
                     <input 
                         type="text" 
-                        lassName="loginInput"
+                        className="loginInput"
                         placeholder="ユーザ名" 
                         required 
                         ref={username}
