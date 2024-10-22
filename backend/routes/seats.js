@@ -215,7 +215,7 @@ async function autoVacateSeat(connection, currentTime, seatId, userId, startTime
 		await connection.query('UPDATE seats SET user_id = NULL, start_time = NULL WHERE seat_id = ?', [seatId]);
 	  	const measurementTime = Math.min(Math.floor((currentTime - new Date(startTime)) / 1000), MAX_STUDY_TIME / 1000);
 	  	await connection.query(
-			'INSERT INTO study_records (user_id, start_date, end_date, measurement_time, contents) VALUES (?, ?, ?, ?, ?)',
+			'INSERT INTO study_records (user_id, start_date, end_date, measurement_time, content) VALUES (?, ?, ?, ?, ?)',
 			[userId, startTime, currentTime, measurementTime, '着席時間が12時間を超えたため、自動離席しました。']
 	  	);
 		await connection.commit();
