@@ -26,6 +26,14 @@
 - マイページ（勉強履歴の表示）
   <img width="1441" alt="image" src="https://github.com/user-attachments/assets/8bb71581-c566-470e-af97-a1892f29fb33">
 
+## 動作環境
+* Docker Desktopがダウンロードされていること
+- 以下のポートが空いていること
+   - バックエンド　：3000
+   - フロントエンド：3001
+   - MySQL　　　　：3306
+   - もし他サービスと衝突していれば、`docker-compose.yml` のポート設定を変更してください
+
 ## セットアップ方法
 ### 1. リポジトリをクローン
   
@@ -33,55 +41,18 @@
 git clone https://github.com/Koharu0212/BoostStudyLounge
 cd BoostStudyLounge
 ```
-### 2. フロントエンド側とバックエンド側のセットアップ
-   
-CUI（ターミナルまたはコマンドプロンプト）を2つ開き、それぞれで以下のコマンドを実行します。
-
-フロントエンド側：
+### 2. Docker コンテナをビルド＆起動
+※ 事前に Docker Desktop を起動しておいてください。
 ```sh
-cd frontend
+docker compose up --build
 ```
-バックエンド側：
+### 3. ブラウザで動作確認ß
+* フロントエンド： http://localhost:3000
+* バックエンド API： http://localhost:3001
+### 4. コンテナを停止
 ```sh
-cd backend
+docker compose down
 ```
-### 3. データベースの初期化
-バックエンド側のCUIで以下のコマンドを実行し、MySQLデータベースを初期化します。
-```sh
-mysql -u root -p < initialize.sql
-```
-プロンプトが表示されたら、MySQLのrootパスワードを入力してください。
-### 4. 依存関係のインストール
-フロントエンド側・バックエンド側の両方のCUIで以下のコマンドを実行し、必要なnpmパッケージをインストールします。
-```sh
-npm install
-```
-### 5. 環境変数の設定
-frontendとbackendディレクトリにそれぞれにある.env.sampleファイルを.envにリネームし、必要に応じて値を変更してください。
-
-バックエンド側：backend/.env
-```sh
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=password
-DB_PORT=3306
-JWT_SECRET=jwt_secret_key
-JWT_EXPIRE=1h
-CLIENT_URL=http://localhost:3000
-SERVER_URL=http://localhost:3001
-SERVER_PORT=3001
-```
-フロントエンド側：frontend/.env
-```sh
-REACT_APP_API_URL=http://localhost:3001
-```
-
-### 6. アプリケーションの起動
-フロントエンド側・バックエンド側の両方のCUIで以下のコマンドを実行してください。
-```sh
-npm start
-```
-
 ## 使い方
 1. トップページから新規登録をクリックしてユーザ作成
 2. 作成したユーザ情報を用いてログイン
