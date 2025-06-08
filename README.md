@@ -29,9 +29,9 @@
 ## 動作環境
 * Docker Desktopがダウンロードされていること
 - 以下のポートが空いていること
-   - バックエンド　：3000
+   - バックエンド：3000
    - フロントエンド：3001
-   - MySQL　　　　：3306
+   - MySQL：3306
    - もし他サービスと衝突していれば、`docker-compose.yml` のポート設定を変更してください
 
 ## セットアップ方法
@@ -46,9 +46,7 @@ cd BoostStudyLounge
 ```sh
 docker compose up --build
 ```
-### 3. ブラウザで動作確認ß
-* フロントエンド： http://localhost:3000
-* バックエンド API： http://localhost:3001
+### 3. ブラウザで動作確認
 ### 4. コンテナを停止
 ```sh
 docker compose down
