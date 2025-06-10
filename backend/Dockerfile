@@ -4,10 +4,11 @@ FROM node:22.3.0
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
-
 COPY . .
 
-# 後で.envから読み取れるようにEXPOSEだけ書いておく
-EXPOSE 3001
+COPY wait-for-it.sh /usr/local/bin/wait-for-it
+RUN chmod +x /usr/local/bin/wait-for-it
 
-CMD ["npm", "start"]
+
+EXPOSE 3001
+CMD ["wait-for-it", "mysql:3306", "--timeout=60", "--", "npm", "start"]
